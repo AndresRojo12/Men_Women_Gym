@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Post, Param } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Param, ParseIntPipe } from '@nestjs/common';
 
 @Controller('exercises')
 export class ExercisesController {
@@ -13,7 +13,7 @@ export class ExercisesController {
   }
 
   @Get(':id')
-  findOneExercise(@Param('id') id: any): string {
+  async findOneExercise(@Param('id', ParseIntPipe) id: number) {
     console.log(id);
     return `This action returns a #${id} exercise`;
   }
