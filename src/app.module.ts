@@ -7,6 +7,7 @@ import { ExercisesModule } from './exercises/exercises.module';
 @Module({
   imports: [ConfigModule.forRoot({
     envFilePath: `.env`,
+    isGlobal: true,
   }), ExercisesModule],
   controllers: [AppController],
   providers: [AppService],
