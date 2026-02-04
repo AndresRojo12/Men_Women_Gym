@@ -5,7 +5,9 @@ import { AppService } from './app.service';
 import { ExercisesModule } from './exercises/exercises.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), ExercisesModule],
+  imports: [ConfigModule.forRoot({
+    envFilePath: `.env`,
+  }), ExercisesModule],
   controllers: [AppController],
   providers: [AppService],
 })
