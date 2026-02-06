@@ -6,10 +6,13 @@ import { CreateExerciseDto } from '../dtos/Exercise.dto';
 export class ExercisesController {
   constructor(private exerciseService: ExercisesService){}
   @Post()
-  @HttpCode(204)
-  createExercise(@Body(new ValidationPipe()) createExerciseDto: CreateExerciseDto,){
-    this.exerciseService.create(createExerciseDto)
+  //@HttpCode(204)
+  createExercise(@Body() data: CreateExerciseDto){
+    return this.exerciseService.create(data);
   }
+  /*createExercise(@Body(new ValidationPipe()) createExerciseDto: CreateExerciseDto,){
+    this.exerciseService.create(createExerciseDto)
+  }*/
 
   @Get()
   getExercises(): string {
