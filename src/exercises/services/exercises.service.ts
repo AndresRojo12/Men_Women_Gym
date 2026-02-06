@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Exercise } from '../entities/Exercise.entity';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateExerciseDto } from '../dtos/Exercise.dto';
+import { CreateExerciseDto, UpdateExerciseDto } from '../dtos/Exercise.dto';
 
 @Injectable()
 export class ExercisesService {
@@ -29,8 +29,11 @@ export class ExercisesService {
     return exercise;
   } 
 
-  async update(id: number, changes: Partial<CreateExerciseDto>) {
+  async update(id: number, changes: UpdateExerciseDto) {
     const exercise = await this.exercisesRepository.findOneBy({ id });
+    if(!exercise){
+      throw new NotFoundException(`Exercise with id ${id} not found`);  
+    }
     this.exercisesRepository.merge(exercise, changes);
     return this.exercisesRepository.save(exercise);
   }

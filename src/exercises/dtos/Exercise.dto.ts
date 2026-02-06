@@ -8,3 +8,5 @@ export class CreateExerciseDto {
     @IsString()
     level: string;
 }
+
+export class UpdateExerciseDto extends CreateExerciseDto {}
