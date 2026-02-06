@@ -17,6 +17,10 @@ export class ExercisesService {
   }
 
   create(data: CreateExerciseDto) {
+    const vUnique = this.exercisesRepository.findOne({ where: {name: data.name}, });
+    if(!vUnique){
+      throw new NotFoundException(`Exercise with name ${data.name} already exists`);  
+    }
     const newExercise = this.exercisesRepository.create(data);
     return this.exercisesRepository.save(newExercise);
   }
