@@ -21,7 +21,9 @@ export class ExercisesController {
 
   @Get(':id')
   async findOneExercise(@Param('id', ParseIntPipe) id: number) {
-    console.log(id);
-    return `This action returns a #${id} exercise`;
+    
+    return this.exerciseService.findOne(id);
   }
+
+  
 }
