@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Exercise } from '../entities/Exercise.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,11 +17,14 @@ export class ExercisesService {
   }
 
   create(data: CreateExerciseDto) {
-    const vUnique = this.exercisesRepository.findOne({ where: {name: data.name}, });
+    /*const vUnique = this.exercisesRepository.findOne({ where: {name: data.name}, });
     if(!vUnique){
       throw new NotFoundException(`Exercise with name ${data.name} created`);  
-    }
+    }*/
     const newExercise = this.exercisesRepository.create(data);
+    if(newExercise){
+      throw new ConflictException(`Exercise with name ${data.name} already exists`);
+    }
     return this.exercisesRepository.save(newExercise);
   }
 
