@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Post, Param, ParseIntPipe, ValidationPipe, Body } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Param, ParseIntPipe, ValidationPipe, Body, Put } from '@nestjs/common';
 import { ExercisesService } from '../services/exercises.service';
 import { CreateExerciseDto } from '../dtos/Exercise.dto';
 
@@ -25,5 +25,8 @@ export class ExercisesController {
     return this.exerciseService.findOne(id);
   }
 
-  
+  @Put(':id')
+  async updateExercise(@Param('id', ParseIntPipe) id: number, @Body() changes: CreateExerciseDto) {
+    return this.exerciseService.update(id, changes);
+  }
 }
