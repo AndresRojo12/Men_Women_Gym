@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Post, Param, ParseIntPipe, ValidationPipe, Body, Put } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Param, ParseIntPipe, ValidationPipe, Body, Put, Delete } from '@nestjs/common';
 import { ExercisesService } from '../services/exercises.service';
 import { CreateExerciseDto } from '../dtos/Exercise.dto';
 
@@ -28,5 +28,10 @@ export class ExercisesController {
   @Put(':id')
   async updateExercise(@Param('id', ParseIntPipe) id: number, @Body() changes: CreateExerciseDto) {
     return this.exerciseService.update(id, changes);
+  }
+
+  @Delete(':id')
+  async deleteExercise(@Param('id', ParseIntPipe) id: number) {
+    return this.exerciseService.remove(id);
   }
 }
