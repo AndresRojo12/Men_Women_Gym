@@ -15,8 +15,8 @@ export class ExercisesController {
   }*/
 
   @Get()
-  getExercises(): string {
-    return 'List of exercises';
+  getExercises() {
+    return this.exerciseService.findAll();
   }
 
   @Get(':id')
