@@ -1,4 +1,5 @@
-import {  PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn  } from "typeorm";
+import {  PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn, OneToMany  } from "typeorm";
+import { Exercise } from "src/exercises/entities/Exercise.entity";
 
 @Entity()
 export class Category {
@@ -13,4 +14,7 @@ export class Category {
 
     @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
+
+    @OneToMany(() => Exercise, exercise => exercise.categories)
+    exercises: Exercise[];
 }
