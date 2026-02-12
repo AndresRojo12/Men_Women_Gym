@@ -1,5 +1,5 @@
-import {  PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn, OneToMany  } from "typeorm";
-import { Exercise } from "src/exercises/entities/Exercise.entity";
+import {  PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn  } from "typeorm";
+import { Exercise } from "../../exercises/entities/Exercise.entity";
 
 @Entity()
 export class Category {
