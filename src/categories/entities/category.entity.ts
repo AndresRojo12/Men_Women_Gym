@@ -15,6 +15,6 @@ export class Category {
     @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
-    @OneToMany(() => Exercise, exercise => exercise.categories)
+    @OneToMany(() => Exercise, exercise => exercise.category)
     exercises: Exercise[];
 }

@@ -1,4 +1,4 @@
-import {  IsString  } from "class-validator"
+import {  IsString, IsNumber } from "class-validator"
 
 export class CreateExerciseDto {
     @IsString()
@@ -7,6 +7,9 @@ export class CreateExerciseDto {
     description: string;
     @IsString()
     level: string;
+
+    @IsNumber()
+    categoryId: number;
 }
 
 export class UpdateExerciseDto extends CreateExerciseDto {}

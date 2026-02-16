@@ -1,5 +1,5 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
-import { Category } from '../entities/Category.entity';
+import { Category } from '../entities/category.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/Category.dto';
@@ -22,9 +22,9 @@ export class CategoriesService {
           throw new NotFoundException(`Category with name ${data.name} created`);  
         }*/
         const newCategory = this.categoriesRepository.create(data);
-        if(newCategory){
-          throw new ConflictException(`Category with name ${data.name} already exists`);
-        }
+        //if(newCategory){
+          //throw new ConflictException(`Category with name ${data.name} already exists`);
+       // }
         return this.categoriesRepository.save(newCategory);
     }
 

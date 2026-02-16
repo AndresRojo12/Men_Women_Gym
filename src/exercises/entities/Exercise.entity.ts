@@ -34,5 +34,5 @@ export class Exercise {
     nullable: false,
   })
   @JoinColumn({ name: 'category_id' })
-  categories: Category[];
+  category: Category;
 }
