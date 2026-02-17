@@ -20,7 +20,7 @@ export class CategoriesService {
   }
 
   // validación para evitar duplicados mas limpio
-
+  
   //async create(data: CreateCategoryDto) {
 
   //const exists = await this.categoriesRepository.exists({
