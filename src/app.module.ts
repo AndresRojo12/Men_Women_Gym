@@ -6,12 +6,13 @@ import { ExercisesModule } from './exercises/exercises.module';
 import { DatabaseModule } from './database/database.module';
 import { CategoriesModule } from './categories/categories.module';
 import { RoutinesModule } from './routines/routines.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
     envFilePath: `.env`,
     isGlobal: true,
-  }), ExercisesModule, DatabaseModule, CategoriesModule, RoutinesModule],
+  }), ExercisesModule, DatabaseModule, CategoriesModule, RoutinesModule, UsersModule],
   controllers: [AppController],
   providers: [AppService],
 })
