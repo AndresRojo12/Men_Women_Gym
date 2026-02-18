@@ -16,3 +16,5 @@ export class CreateUserDto {
     @IsBoolean()
     isActive: boolean;
 }
+
+export class UpdateUserDto extends CreateUserDto {}
