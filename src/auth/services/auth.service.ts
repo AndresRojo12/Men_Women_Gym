@@ -3,7 +3,6 @@ import { UsersService } from '../../users/services/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../../users/dtos/User.dto';
 import { Role } from '../roles/rol.enum';
-import th from 'zod/v4/locales/th.js';
 
 @Injectable()
 export class AuthService {
