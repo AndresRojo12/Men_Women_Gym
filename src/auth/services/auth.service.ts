@@ -11,9 +11,10 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(dto: CreateUserDto){
+  async register(dto: CreateUserDto) {
     let role = Role.CUSTOMER;
-    if(dto.admincode && dto.admincode === process.env.ADMIN_SECRET){
+    //const adminSecret = this.configService.get<string>('ADMIN_SECRET');
+    if (dto.admincode && dto.admincode === process.env.ADMIN_SECRET) {
       role = Role.ADMIN;
     }
 
@@ -33,9 +34,9 @@ export class AuthService {
     }
     return null;
   }
-  
+
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id};
+    const payload = { email: user.email, sub: user.id };
     return {
       // la singn method de jwtService genera un token JWT con el payload proporcionado
       access_token: this.jwtService.sign(payload),
