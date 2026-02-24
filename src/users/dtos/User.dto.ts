@@ -12,6 +12,7 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsBoolean()
     isActive: boolean;
+    admincode?: string;
 }
 
 export class UpdateUserDto extends CreateUserDto {}
