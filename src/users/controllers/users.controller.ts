@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Put, Body, Param, ParseIntPipe, Delete } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { CreateUserDto, UpdateUserDto } from '../dtos/User.dto';
+import { Public } from '../../auth/decorators/public.decoractor';
 
 @Controller('users')
 export class UsersController {
@@ -11,6 +12,7 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
+    @Public()
     @Post()
     create(@Body() data: CreateUserDto) {
         return this.usersService.create(data);
