@@ -15,7 +15,7 @@ export class UsersService {
         return await this.usersRepository.find();
     }
 
-    async create(data: CreateUserDto) {
+    async create(data: Partial<User>) {
         const existingUser = await this.usersRepository.findOne({
             where: { email: data.email },
         });
