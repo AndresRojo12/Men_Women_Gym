@@ -12,11 +12,11 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
-    @Public()
-    @Post()
-    create(@Body() data: CreateUserDto) {
-        return this.usersService.create(data);
-    }
+    //@Public()
+    //@Post()
+    //create(@Body() data: CreateUserDto) {
+      //  return this.usersService.create(data);
+    //}
 
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number) {
