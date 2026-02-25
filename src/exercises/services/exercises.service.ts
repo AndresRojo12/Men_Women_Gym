@@ -27,6 +27,14 @@ export class ExercisesService {
     if(!vUnique){
       throw new NotFoundException(`Exercise with name ${data.name} created`);  
       }*/
+     const existingExercise = await this.exercisesRepository.findOne({
+       where: { name: data.name },
+     });
+     if (existingExercise) {
+       throw new ConflictException(
+         `Exercise with name ${data.name} already exists`,
+       );
+     }
      const category = await this.categoriesRepository.findOne({
        where: { id: data.categoryId },
      });
