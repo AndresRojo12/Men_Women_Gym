@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { UsersService } from '../../users/services/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../../users/dtos/User.dto';
@@ -18,9 +19,13 @@ export class AuthService {
       role = Role.ADMIN;
     }
 
+    // hash de la contraseña antes de guardarla en la base de datos
+
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
     return this.usersService.create({
       email: dto.email,
-      password: dto.password,
+      password: hashedPassword,
       isActive: true,
       role,
     });
@@ -28,9 +33,14 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email);
-    if (user && user.password === password) {
-      const { password, ...result } = user;
-      return result;
+    // hash de la contraseña ingresada y comparación con la contraseña
+    // almacenada en la base de datos
+    if (user) {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (isMatch) {
+        const { password, ...result } = user;
+        return result;
+      }
     }
     return null;
   }
