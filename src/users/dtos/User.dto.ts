@@ -10,9 +10,9 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsString()
     password: string;
-    @IsNotEmpty()
-    @IsString()
-    admincode?: string;
+   // @IsNotEmpty()
+    //@IsString()
+    //admincode?: string;
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}

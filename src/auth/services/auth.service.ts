@@ -13,12 +13,14 @@ export class AuthService {
   ) {}
 
   async register(dto: CreateUserDto) {
-    let role = Role.CUSTOMER;
     //const adminSecret = this.configService.get<string>('ADMIN_SECRET');
     //if (dto.admincode && dto.admincode === process.env.ADMIN_SECRET) {
-      //role = Role.ADMIN;
-    //}
-
+      //}
+      const userCount = await this.usersService.countUsers();
+      let role = Role.CUSTOMER;
+    if (userCount === 0) {
+      role = Role.ADMIN;
+    }
     // hash de la contraseña antes de guardarla en la base de datos
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
@@ -27,7 +29,7 @@ export class AuthService {
       email: dto.email,
       password: hashedPassword,
       isActive: true,
-      role: Role.CUSTOMER,
+      role: role,
     });
   }
 

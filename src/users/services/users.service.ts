@@ -54,6 +54,10 @@ export class UsersService {
     return await this.usersRepository.save(newUser);
   }
 
+  async countUsers(): Promise<number> {
+    return await this.usersRepository.count();
+  }
+
   async findOne(id: number) {
     const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
