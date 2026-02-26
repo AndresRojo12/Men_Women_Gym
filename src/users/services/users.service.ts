@@ -3,6 +3,8 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { Role } from '../../auth/roles/rol.enum';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -32,6 +34,23 @@ export class UsersService {
       );
     }
     const newUser = this.usersRepository.create(data);
+    return await this.usersRepository.save(newUser);
+  }
+
+  async createAdmin(dto: CreateUserDto) {
+    const existingUser = await this.findOneByEmail(dto.email);
+    if (existingUser) {
+      throw new ConflictException('User already exists');
+    }
+
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+    const newUser = this.usersRepository.create({
+      email: dto.email,
+      password: hashedPassword,
+      role: Role.ADMIN,
+      isActive: true,
+    });
     return await this.usersRepository.save(newUser);
   }
 
