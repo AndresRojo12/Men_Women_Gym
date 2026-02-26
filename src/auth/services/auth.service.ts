@@ -33,14 +33,19 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email);
-    // hash de la contraseña ingresada y comparación con la contraseña
-    // almacenada en la base de datos
-    if (user) {
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (isMatch) {
-        const { password, ...result } = user;
-        return result;
-      }
+
+    if (!user) return null;
+    // Verificar si el usuario está activo antes de permitir la autenticación
+    if (!user.isActive) {
+      throw new UnauthorizedException('User is inactive');
+    }
+    
+        // hash de la contraseña ingresada y comparación con la contraseña
+        // almacenada en la base de datos
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (isMatch) {
+      const { password, ...result } = user;
+      return result;
     }
     return null;
   }
