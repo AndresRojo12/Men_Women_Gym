@@ -12,14 +12,10 @@ export class ExercisesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
-  //@HttpCode(204)
   createExercise(@Body() data: CreateExerciseDto){
     return this.exerciseService.create(data);
   }
-  /*createExercise(@Body(new ValidationPipe()) createExerciseDto: CreateExerciseDto,){
-    this.exerciseService.create(createExerciseDto)
-  }*/
-
+  
   @Get()
   getExercises() {
     return this.exerciseService.findAll();
@@ -30,7 +26,8 @@ export class ExercisesController {
     
     return this.exerciseService.findOne(id);
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @Put(':id')
   async updateExercise(@Param('id', ParseIntPipe) id: number, @Body() changes: CreateExerciseDto) {
     return this.exerciseService.update(id, changes);
