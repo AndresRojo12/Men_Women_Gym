@@ -16,7 +16,10 @@ export class UsersService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return await this.usersRepository.find();
+    return await this.usersRepository.find({
+      // Solo devuelve los usuarios que están activos
+      where: { isActive: true },
+    });
   }
 
   async create(data: Partial<User>) {
