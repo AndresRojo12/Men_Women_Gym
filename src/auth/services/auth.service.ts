@@ -15,9 +15,9 @@ export class AuthService {
   async register(dto: CreateUserDto) {
     let role = Role.CUSTOMER;
     //const adminSecret = this.configService.get<string>('ADMIN_SECRET');
-    if (dto.admincode && dto.admincode === process.env.ADMIN_SECRET) {
-      role = Role.ADMIN;
-    }
+    //if (dto.admincode && dto.admincode === process.env.ADMIN_SECRET) {
+      //role = Role.ADMIN;
+    //}
 
     // hash de la contraseña antes de guardarla en la base de datos
 
@@ -27,7 +27,7 @@ export class AuthService {
       email: dto.email,
       password: hashedPassword,
       isActive: true,
-      role,
+      role: Role.CUSTOMER,
     });
   }
 
