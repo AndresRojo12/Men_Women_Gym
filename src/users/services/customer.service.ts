@@ -32,4 +32,15 @@ export class CustomerService {
     }
     return customer;
   }
+
+  async update(id: number, data: CreateCustomerDto) {
+    const customer = await this.findOne(id);
+    Object.assign(customer, data);
+    return await this.customerRepository.save(customer);
+  }
+
+  async remove(id: number) {
+    const customer = await this.findOne(id);
+    return await this.customerRepository.remove(customer);
+  }
 }
