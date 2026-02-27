@@ -25,7 +25,4 @@ export class CreateCustomerDto {
     @IsNotEmpty()
     weight: number;
 
-    @IsNumber()
-    @IsNotEmpty()
-    userId: number;
 }
