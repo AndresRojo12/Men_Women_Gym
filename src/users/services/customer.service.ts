@@ -14,12 +14,18 @@ export class CustomerService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(data: CreateCustomerDto) {
+  async create(userId: number, data: CreateCustomerDto) {
     const user = await this.userRepository.findOne({
-      where: { id: data.userId },
+      where: { id: userId },
+      relations: ['customer'],
     });
     if (!user) {
-      throw new NotFoundException(`User with id ${data.userId} not found`);
+      throw new NotFoundException(`User with id ${userId} not found`);
+    }
+
+    // impedir doble perfil de cliente para un mismo usuario
+    if (user.customer) {
+      throw new NotFoundException(`Customer already exists for user with id ${userId}`);
     }
 
     const newCustomer = this.customerRepository.create({

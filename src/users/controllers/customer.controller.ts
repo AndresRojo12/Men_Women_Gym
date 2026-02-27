@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Put, Param, ParseIntPipe, Delete, Body } from "@nestjs/common";
+import { Controller, Get, Post, Put, Param, ParseIntPipe, Delete, UseGuards, Body, Request } from "@nestjs/common";
 import { CustomerService } from "../services/customer.service";
 import { CreateCustomerDto } from "../dtos/Customer.dto";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 
 @Controller('customers')
 export class CustomerController {
@@ -15,10 +16,10 @@ export class CustomerController {
     findOne(@Param('id', ParseIntPipe) id: number) {
         return this.customerService.findOne(id);
     }
-    
+    @UseGuards(JwtAuthGuard)
     @Post()
-    create(@Body() data: CreateCustomerDto) {
-        return this.customerService.create(data);
+    create(@Request() req, @Body() data: CreateCustomerDto) {
+        return this.customerService.create(req.user.id, data);
     }
     
     @Put(':id')
