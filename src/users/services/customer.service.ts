@@ -41,6 +41,21 @@ export class CustomerService {
     });
   }
 
+  // traer perfil de customer logueado
+
+  async findMyProfile(userId: number) {
+    const customer = await this.customerRepository.findOne({
+      where: {
+        user: { id: userId },
+      },
+      relations: ['user'],
+    });
+    if (!customer) {
+      throw new NotFoundException('Customer profile not completed yet');
+    }
+    return customer;
+  }
+
   async findOne(id: number) {
     const customer = await this.customerRepository.findOne({
       where: { id },

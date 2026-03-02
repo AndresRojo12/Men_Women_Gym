@@ -18,6 +18,12 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class CustomerController {
   constructor(private customerService: CustomerService) {}
 
+  // traer el perfil del cliente logueado
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  getMe(@Request() req) {
+    return this.customerService.findMyProfile(req.user.userId);
+  }
   @Get()
   findAll() {
     return this.customerService.findAll();
@@ -28,12 +34,6 @@ export class CustomerController {
     return this.customerService.findOne(id);
   }
 
-  // traer el perfil del cliente logueado
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  getMe(@Request() req) {
-    return this.customerService.findOne(req.user.userId);
-  }
 
   @UseGuards(JwtAuthGuard)
   @Post()
