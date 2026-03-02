@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne
 } from 'typeorm';
+
+import { Customer } from '../../users/entities/customer.entity';
 
 @Entity()
 export class Routine {
@@ -22,4 +25,7 @@ export class Routine {
   
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
+
+  @ManyToOne(() => Customer, (customer) => customer.routines)
+  customer: Customer;
 }
