@@ -27,6 +27,14 @@ export class CustomerController {
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.customerService.findOne(id);
   }
+
+  // traer el perfil del cliente logueado
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  getMe(@Request() req) {
+    return this.customerService.findOne(req.user.userId);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Request() req, @Body() data: CreateCustomerDto) {
