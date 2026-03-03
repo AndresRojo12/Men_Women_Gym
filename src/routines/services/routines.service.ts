@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Routine } from '../entities/routine.entity';
+import { Customer } from 'src/users/entities/customer.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateRoutineDto, UpdateRoutineDto } from '../dtos/Routine.dto';
@@ -13,23 +14,39 @@ export class RoutinesService {
   constructor(
     @InjectRepository(Routine)
     private routinesRepository: Repository<Routine>,
+    @InjectRepository(Customer)
+    private customerRepository: Repository<Customer>,
   ) {}
 
   async findAll(): Promise<Routine[]> {
     return await this.routinesRepository.find();
   }
 
-  async create(data: CreateRoutineDto) {
-    const existingRoutine = await this.routinesRepository.findOne({
-      where: { name: data.name },
+  async create( userId: number, data: CreateRoutineDto) {
+    const customer = await this.customerRepository.findOne({
+      where:{ id: userId } ,
+      relations: ['routines'],
     });
-    if (existingRoutine) {
-      throw new ConflictException(
-        `Routine with name ${data.name} already exists`,
-      );
+    if (!customer) {
+      throw new NotFoundException('Customer profile not found for the user');
     }
-    const newRoutine = this.routinesRepository.create(data);
 
+    // impedir rutina con mismo nombre para un mismo cliente
+    const existingRoutine = await this.routinesRepository.findOne({
+      where: { name: data.name, customer: { id: customer.id } },
+    });
+
+    if (existingRoutine) {
+      throw new ConflictException(`Routine with name "${data.name}" already exists`);
+    }
+    //const existingRoutine = await this.routinesRepository.findOne({
+    //  where: { name: data.name },
+    //});
+
+    //if (customer.routines) {
+      //throw new NotFoundException(`Routine already exists for customer with id ${customer.id}`);
+    //}
+    const newRoutine = this.routinesRepository.create({ ...data, customer });
     return await this.routinesRepository.save(newRoutine);
   }
 
