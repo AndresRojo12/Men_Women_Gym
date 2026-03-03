@@ -1,6 +1,7 @@
-import { Controller, Get, Post, ParseIntPipe, Delete, Put, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, ParseIntPipe, Delete, Put, Param, Body, UseGuards, Request } from '@nestjs/common';
 import { RoutinesService } from '../services/routines.service';
 import { CreateRoutineDto, UpdateRoutineDto } from '../dtos/Routine.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('routines')
 export class RoutinesController {
@@ -11,9 +12,10 @@ export class RoutinesController {
     return this.routinesService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() data: CreateRoutineDto) {
-    return this.routinesService.create(data);
+  create(@Request() req, @Body() data: CreateRoutineDto) {
+    return this.routinesService.create(req.user.id, data);
   }
 
   @Get(':id')
