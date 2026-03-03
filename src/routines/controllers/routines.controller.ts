@@ -21,7 +21,7 @@ export class RoutinesController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   findMyRoutines(@Request() req) {
-    return this.routinesService.findMyRoutines(req.user.userId);
+    return this.routinesService.findMyRoutines(req.user.id);
   }
 
   @Get()
