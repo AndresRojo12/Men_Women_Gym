@@ -5,8 +5,8 @@ import { View, StyleSheet} from 'react-native';
 import { RegisterForm } from '../components/RegisterForm';
 import { RegisterRequest } from '../services/auth.api';
 import { useNavigation } from '@react-navigation/native';
-import { AuthStackParamList } from '../types/auth.types';
-import { Loading } from '../components/Loading';
+import { AuthStackParamList } from '../types/types';
+import { Loading } from '../global/components/Loading';
 
 type NavigationProp = NativeStackNavigationProp<
   AuthStackParamList,

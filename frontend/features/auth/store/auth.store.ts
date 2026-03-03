@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { loginRequest } from '../services/auth.api';
-import { setToken, removeToken } from '../../../services/storage';
+import { setToken, removeToken } from '../services/storage';
 
 interface AuthState {
   user: any | null;          

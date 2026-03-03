@@ -2,7 +2,7 @@ import React from 'react';
 import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthStackParamList } from './features/auth.types';
+import { AuthStackParamList } from './features/auth/types/types';
 
 import LoginScreen from './features/auth/screens/LoginScreen';
 import { RegisterScreen } from './features/auth/screens/RegisterScreen';
