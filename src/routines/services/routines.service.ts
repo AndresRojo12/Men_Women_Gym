@@ -8,6 +8,7 @@ import { Customer } from 'src/users/entities/customer.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateRoutineDto, UpdateRoutineDto } from '../dtos/Routine.dto';
+import { use } from 'passport';
 
 @Injectable()
 export class RoutinesService {
@@ -20,6 +21,18 @@ export class RoutinesService {
 
   async findAll(): Promise<Routine[]> {
     return await this.routinesRepository.find();
+  }
+
+  // traer rutinas del cliente logueado
+  async findMyRoutines(userId: number) {
+    return await this.routinesRepository.findOne({
+      where: {
+        customer: { 
+          user: { id: userId },
+         },
+      },
+      relations: ['customer'],
+    })
   }
 
   async create( userId: number, data: CreateRoutineDto) {
@@ -39,13 +52,7 @@ export class RoutinesService {
     if (existingRoutine) {
       throw new ConflictException(`Routine with name "${data.name}" already exists`);
     }
-    //const existingRoutine = await this.routinesRepository.findOne({
-    //  where: { name: data.name },
-    //});
-
-    //if (customer.routines) {
-      //throw new NotFoundException(`Routine already exists for customer with id ${customer.id}`);
-    //}
+    
     const newRoutine = this.routinesRepository.create({ ...data, customer });
     return await this.routinesRepository.save(newRoutine);
   }
