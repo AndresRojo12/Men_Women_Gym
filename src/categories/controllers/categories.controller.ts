@@ -19,7 +19,7 @@ import { CreateCategoryDto } from '../dtos/Category.dto';
 @Controller('categories')
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
-  
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
@@ -36,7 +36,8 @@ export class CategoriesController {
   async findOneCategory(@Param('id', ParseIntPipe) id: number) {
     return this.categoriesService.findOne(id);
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @Put(':id')
   async updateCategory(
     @Param('id', ParseIntPipe) id: number,
@@ -45,6 +46,8 @@ export class CategoriesController {
     return this.categoriesService.update(id, changes);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @Delete(':id')
   async deleteCategory(@Param('id', ParseIntPipe) id: number) {
     return this.categoriesService.remove(id);
