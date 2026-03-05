@@ -10,7 +10,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
-import { RoutineExercise } from '../../routines/entities/routine_exercise.entity';
+import { RoutineExercise } from '../../routine_exercises/entities/Routine_Exercise.entity';
 
 @Entity()
 export class Exercise {

@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 import { Customer } from '../../users/entities/customer.entity';
-import { RoutineExercise } from './routine_exercise.entity';
+import { RoutineExercise } from '../../routine_exercises/entities/Routine_Exercise.entity';
 
 @Entity()
 export class Routine {

@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { RoutineExercisesModule } from './routine_exercises/routine_exercises.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
     RoutinesModule,
     UsersModule,
     AuthModule,
+    RoutineExercisesModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Exercise } from "../../exercises/entities/Exercise.entity";
-import { Routine } from "./routine.entity";
+import { Routine } from "../../routines/entities/routine.entity";
 
 @Entity()
 export class RoutineExercise {
@@ -24,4 +24,10 @@ export class RoutineExercise {
 
     @Column({ nullable: true })
     weight: number; // Weight in kg
+
+    @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
+
+    @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
 }
