@@ -7,8 +7,10 @@ import {
   ManyToMany,
   JoinColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
+import { RoutineExercise } from 'src/routines/entities/routine_exercise.entity';
 
 @Entity()
 export class Exercise {
@@ -33,6 +35,10 @@ export class Exercise {
   @ManyToOne(() => Category, (category) => category.exercises, {
     nullable: false,
   })
+
+  @OneToMany(() => RoutineExercise, (routineExercise) => routineExercise.exercise)
+  routineExercises: RoutineExercise[];
+
   @JoinColumn({ name: 'category_id' })
   category: Category;
 }

@@ -4,10 +4,12 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne
+  ManyToOne,
+  OneToMany
 } from 'typeorm';
 
 import { Customer } from '../../users/entities/customer.entity';
+import { RoutineExercise } from './routine_exercise.entity';
 
 @Entity()
 export class Routine {
@@ -28,4 +30,7 @@ export class Routine {
 
   @ManyToOne(() => Customer, (customer) => customer.routines)
   customer: Customer;
+
+  @OneToMany(() => RoutineExercise, (routineExercise) => routineExercise.routine)
+  routineExercises: RoutineExercise[];
 }
