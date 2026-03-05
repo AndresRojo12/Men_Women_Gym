@@ -24,3 +24,5 @@ export class CreateRoutineExerciseDto {
     @IsInt()
     weight: number;
 }
+
+export class UpdateRoutineExerciseDto extends CreateRoutineExerciseDto{}
