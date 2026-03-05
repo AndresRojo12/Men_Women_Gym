@@ -35,10 +35,13 @@ export class Exercise {
   @ManyToOne(() => Category, (category) => category.exercises, {
     nullable: false,
   })
-
-  @OneToMany(() => RoutineExercise, (routineExercise) => routineExercise.exercise)
-  routineExercises: RoutineExercise[];
-
+  
   @JoinColumn({ name: 'category_id' })
   category: Category;
+
+  @OneToMany(
+    () => RoutineExercise,
+    (routineExercise) => routineExercise.exercise,
+  )
+  routineExercises: RoutineExercise[];
 }
