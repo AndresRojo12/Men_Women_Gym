@@ -31,13 +31,14 @@ export class RoutinesService {
           user: { id: userId },
          },
       },
-      relations: ['customer'],
+      relations: ['customer', 'routineExercises', 'routineExercises.exercise'
+      ],
     })
   }
 
   async create( userId: number, data: CreateRoutineDto) {
     const customer = await this.customerRepository.findOne({
-      where:{ id: userId } ,
+      where: { user: { id: userId } },
       relations: ['routines'],
     });
     if (!customer) {
