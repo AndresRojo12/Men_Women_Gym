@@ -66,8 +66,15 @@ export class RoutinesService {
     return routine;
   }
 
-    async update(id: number, data: UpdateRoutineDto) {
-    const routine = await this.routinesRepository.findOneBy({ id });
+    async update(userId: number, id: number, data: UpdateRoutineDto) {
+    const routine = await this.routinesRepository.findOne({ 
+      where: {
+        id,
+        customer: { 
+          user: { id: userId },
+         },
+      }
+     });
     if (!routine) {
       throw new NotFoundException(`Routine with id ${id} not found`);
     }
@@ -75,8 +82,15 @@ export class RoutinesService {
     return await this.routinesRepository.save(updatedRoutine);
   }
   
-  async remove(id: number) {
-    const routine = await this.routinesRepository.findOneBy({ id });
+  async remove(userId: number, id: number) {
+    const routine = await this.routinesRepository.findOne({ 
+      where: {
+        id,
+        customer: { 
+          user: { id: userId },
+         },
+      }
+     });
     if (!routine) {
       throw new NotFoundException(`Routine with id ${id} not found`);
     }
