@@ -39,17 +39,19 @@ export class RoutinesController {
   create(@Request() req, @Body() data: CreateRoutineDto) {
     return this.routinesService.create(req.user.id, data);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   update(
+    @Request() req,
     @Param('id', ParseIntPipe) id: number,
     @Body() data: UpdateRoutineDto,
   ) {
-    return this.routinesService.update(id, data);
+    return this.routinesService.update(req.user.id, id, data);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.routinesService.remove(id);
+  remove(@Request() req, @Param('id', ParseIntPipe) id: number) {
+    return this.routinesService.remove(req.user.id, id);
   }
 }
