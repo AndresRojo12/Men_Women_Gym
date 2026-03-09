@@ -8,13 +8,17 @@ import {
   Param,
   Body,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { Express } from 'express';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { Role } from '../../auth/roles/rol.enum';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CategoriesService } from '../services/categories.service';
 import { CreateCategoryDto } from '../dtos/Category.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('categories')
 export class CategoriesController {
@@ -23,8 +27,12 @@ export class CategoriesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
-  createCategory(@Body() data: CreateCategoryDto) {
-    return this.categoriesService.create(data);
+  @UseInterceptors(FileInterceptor('file'))
+  createCategory(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() data: CreateCategoryDto,
+  ) {
+    return this.categoriesService.create({ ...data, image: file.filename });
   }
 
   @Get()
