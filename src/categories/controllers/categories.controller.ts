@@ -11,7 +11,7 @@ import {
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
-import { Express } from 'express';
+import type { Express } from 'express';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { Role } from '../../auth/roles/rol.enum';
 import { RolesGuard } from '../../auth/guards/roles.guard';
@@ -32,7 +32,12 @@ export class CategoriesController {
     @UploadedFile() file: Express.Multer.File,
     @Body() data: CreateCategoryDto,
   ) {
+
+    if (!file) {
+      throw new Error('File is required');
+    }
     return this.categoriesService.create({ ...data, image: file.filename });
+    
   }
 
   @Get()
