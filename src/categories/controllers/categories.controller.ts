@@ -12,6 +12,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import type { Express } from 'express';
+import { multerConfig } from 'src/common/config/multer.config';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { Role } from '../../auth/roles/rol.enum';
 import { RolesGuard } from '../../auth/guards/roles.guard';
@@ -27,7 +28,7 @@ export class CategoriesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', multerConfig))
   createCategory(
     @UploadedFile() file: Express.Multer.File,
     @Body() data: CreateCategoryDto,
