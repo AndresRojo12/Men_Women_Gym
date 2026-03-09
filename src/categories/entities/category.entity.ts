@@ -9,6 +9,9 @@ export class Category {
     @Column({ unique: true })
     name: string;
 
+    @Column()
+    image: string;
+
     @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
