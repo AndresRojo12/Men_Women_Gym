@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { z } from 'zod';
-import { RegisterFormProps } from '../types';
+import { RegisterFormProps } from '@/features/auth/types/types';
 import {
   View,
   TextInput,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LoginFormProps } from '../types';
+import { LoginFormProps } from '@/features/auth/types/types';
 import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { z } from "zod";
