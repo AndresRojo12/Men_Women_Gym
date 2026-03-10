@@ -26,6 +26,9 @@ export class Exercise {
   @Column()
   level: string;
 
+  @Column()
+  image: string;
+
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
