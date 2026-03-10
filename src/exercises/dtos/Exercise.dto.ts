@@ -7,6 +7,8 @@ export class CreateExerciseDto {
     description: string;
     @IsString()
     level: string;
+    @IsString()
+    image: string;
 
     @IsNumber()
     categoryId: number;

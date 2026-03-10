@@ -1,10 +1,12 @@
-import { Controller, Get, HttpCode, Post, Param, ParseIntPipe, ValidationPipe, Body, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Param, ParseIntPipe, ValidationPipe, Body, Put, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ExercisesService } from '../services/exercises.service';
 import { CreateExerciseDto } from '../dtos/Exercise.dto';
 import { Roles } from '../..//auth/decorators/roles.decorator';
 import { Role } from '../../auth/roles/rol.enum';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { multerConfig } from 'src/common/config/multer.config';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('exercises')
 export class ExercisesController {
@@ -12,6 +14,7 @@ export class ExercisesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
+  @UseInterceptors(FileInterceptor('file', multerConfig))
   createExercise(@Body() data: CreateExerciseDto){
     return this.exerciseService.create(data);
   }
