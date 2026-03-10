@@ -1,4 +1,4 @@
-import {  IsString, IsNumber } from "class-validator"
+import {  IsString, IsNumber, IsOptional } from "class-validator"
 
 export class CreateExerciseDto {
     @IsString()
@@ -8,7 +8,8 @@ export class CreateExerciseDto {
     @IsString()
     level: string;
     @IsString()
-    image: string;
+    @IsOptional()
+    image?: string;
 
     @IsNumber()
     categoryId: number;

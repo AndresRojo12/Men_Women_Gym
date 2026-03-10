@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Post, Param, ParseIntPipe, ValidationPipe, Body, Put, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Param, ParseIntPipe, ValidationPipe, Body, Put, Delete, UseGuards, UseInterceptors, UploadedFile} from '@nestjs/common';
 import { ExercisesService } from '../services/exercises.service';
 import { CreateExerciseDto } from '../dtos/Exercise.dto';
 import { Roles } from '../..//auth/decorators/roles.decorator';
@@ -15,7 +15,10 @@ export class ExercisesController {
   @Roles(Role.ADMIN)
   @Post()
   @UseInterceptors(FileInterceptor('file', multerConfig))
-  createExercise(@Body() data: CreateExerciseDto){
+  createExercise(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() data: CreateExerciseDto){
+    data.image = file.filename;
     return this.exerciseService.create(data);
   }
   
