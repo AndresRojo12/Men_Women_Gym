@@ -16,7 +16,7 @@ const HomeScreen = () => {
     <View style={{ marginBottom: 50, alignItems: 'center' }}>
       <Text>Home Screen</Text>
 
-      <Button title="Ir a categorías" onPress={() => navigation.navigate('Categories')}/>
+      <Button title="Grupos musculares" onPress={() => navigation.navigate('Categories')}/>
       <Button title="Logout" onPress={() => setModalVisible(true)} />
 
       <GlobalModal

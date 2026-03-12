@@ -1,18 +1,22 @@
-const { pl } = require("zod/v4/locales");
-
 module.exports = function (api) {
   api.cache(true);
+
   return {
-    presets: ['babel-preset-expo'],
+    presets: [['babel-preset-expo'], 'nativewind/babel'],
+
     plugins: [
       [
-        "module-resolver",
+        'module-resolver',
         {
+          root: ['./'],
+
           alias: {
-            "@": "./frontend",
+            '@': './',
+            'tailwind.config': './tailwind.config.js',
           },
         },
       ],
+      'react-native-worklets/plugin',
     ],
   };
 };
