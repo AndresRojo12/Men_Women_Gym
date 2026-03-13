@@ -3,36 +3,21 @@ import { extname } from 'path';
 
 export const multerConfig = {
   storage: diskStorage({
-    destination: (req, file, callback) => {
-
-      let uploadPath = './uploads';
-
-      if (req.baseUrl.includes('categories')) {
-        uploadPath = './uploads/categories';
-      }
-
-      if (req.baseUrl.includes('exercises')) {
-        uploadPath = './uploads/exercises';
-      }
-
-      callback(null, uploadPath);
-    },
+    destination: './uploads/categories',
 
     filename: (req, file, callback) => {
-
       const uniqueSuffix =
         Date.now() + '-' + Math.round(Math.random() * 1e9);
 
       const ext = extname(file.originalname);
 
-      const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
+      const filename = `file-${uniqueSuffix}${ext}`;
 
       callback(null, filename);
     },
   }),
 
   fileFilter: (req, file, callback) => {
-
     if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
       return callback(new Error('Only image files are allowed'), false);
     }
