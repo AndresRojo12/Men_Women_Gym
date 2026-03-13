@@ -7,6 +7,7 @@ import { Category } from '../entities/category.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/Category.dto';
+import { buildImageUrl } from '../../common/helpers/image.url.helper';
 
 @Injectable()
 export class CategoriesService {
@@ -15,11 +16,14 @@ export class CategoriesService {
     private categoriesRepository: Repository<Category>,
   ) {}
 
-  findAll(): Promise<Category[]> {
-    return this.categoriesRepository.find();
+  async findAll(): Promise<Category[]> {
+    const categories = await this.categoriesRepository.find();
+    return categories.map((category) => ({
+      ...category,
+      image: buildImageUrl('categories', category.image),
+    }));
   }
 
- 
   async create(data: CreateCategoryDto) {
     /*const vUnique = this.categoriesRepository.findOne({ where: {name: data.name}, });
         if(!vUnique){
@@ -43,7 +47,10 @@ export class CategoriesService {
     if (!category) {
       throw new NotFoundException(`Category with id ${id} not found`);
     }
-    return category;
+    return {
+      ...category,
+      image: buildImageUrl('categories', category.image),
+    };
   }
 
   async update(id: number, changes: UpdateCategoryDto) {
