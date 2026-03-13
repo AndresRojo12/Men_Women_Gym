@@ -19,23 +19,7 @@ export class CategoriesService {
     return this.categoriesRepository.find();
   }
 
-  // validación para evitar duplicados mas limpio
-  
-  //async create(data: CreateCategoryDto) {
-
-  //const exists = await this.categoriesRepository.exists({
-  //where: { name: data.name },
-  //});
-
-  //if (exists) {
-  //throw new ConflictException(
-  //`Category with name ${data.name} already exists`,
-  //);
-  //}
-
-  //return await this.categoriesRepository.save(data);
-  //}
-
+ 
   async create(data: CreateCategoryDto) {
     /*const vUnique = this.categoriesRepository.findOne({ where: {name: data.name}, });
         if(!vUnique){
