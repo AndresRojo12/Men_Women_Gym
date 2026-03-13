@@ -1,8 +1,13 @@
 import axios from 'axios';
 import { getToken } from './storage';
+import { Platform } from 'react-native';
+
+// determine base URL depending on runtime environment
+const defaultUrl = process.env.EXPO_PUBLIC_API_URL;
+
 
 export const api = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL,
+  baseURL: defaultUrl,
   headers: {
     'Content-Type': 'application/json',
   },
