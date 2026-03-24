@@ -13,7 +13,6 @@ import CategoriesScreen from './features/categories/screens/GetCategories';
 
 import { useAuthStore } from './features/auth/store/auth.store';
 
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import '@/global.css';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
@@ -22,7 +21,7 @@ export default function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
-    <GluestackUIProvider mode="dark">
+    
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {isAuthenticated ? (
@@ -39,6 +38,6 @@ export default function App() {
         </Stack.Navigator>
         <Toast />
       </NavigationContainer>
-    </GluestackUIProvider>
+    
   );
 }
