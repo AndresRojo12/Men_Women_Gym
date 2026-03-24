@@ -1,13 +1,14 @@
 import { create } from 'zustand';
 import { loginRequest } from '../services/auth.api';
-import { setToken, removeToken } from '../services/storage';
+import { setToken, getToken, removeToken } from '../services/storage';
 
 interface AuthState {
-  user: any | null;          
+  user: any | null;
   token: string | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  initialize: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -35,5 +36,14 @@ export const useAuthStore = create<AuthState>((set) => ({
       token: null,
       isAuthenticated: false,
     });
+  },
+
+  initialize: async () => {
+    const token = await getToken();
+    if (token) {
+      set({ token, isAuthenticated: true });
+    } else {
+      set({ token: null, isAuthenticated: false });
+    }
   },
 }));

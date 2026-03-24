@@ -1,5 +1,6 @@
-import { View, Text, Image, FlatList, Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { View, FlatList, StyleSheet } from 'react-native';
+import { Card, Button, Text } from 'react-native-paper';
 import { api } from '../../auth/services/api';
 
 interface Category {
@@ -10,13 +11,24 @@ interface Category {
 
 function Categories() {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchCategories = async () => {
+    setLoading(true);
+    setError(null);
+
     try {
       const response = await api.get<Category[]>('/categories');
       setCategories(response.data);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
+    } catch (err: any) {
+      console.error(
+        'Error fetching categories:',
+        err.response?.data || err.message || err,
+      );
+      setError('No se pudieron cargar las categorías.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -26,55 +38,56 @@ function Categories() {
 
   const renderCategory = ({ item }: { item: Category }) => {
     return (
-      <Pressable
-        style={{
-         
-          margin: 8,
-          borderRadius: 16,
-          overflow: 'hidden',
-          backgroundColor: '#000'
-        }}
-      >
-        <Image
-          source={{ uri: item.image }}
-          style={{
-            width: '100%',
-            height: 140,
-            position: 'absolute'
-          }}
+      <Card style={styles.card} key={String(item.id)}>
+        <Card.Title title={item.name} />
+        <Card.Cover
+          source={{ uri: item.image || 'https://picsum.photos/700' }}
+          style={{ height: 330 }}
         />
-
-        <View
-          style={{
-            height: 140,
-            justifyContent: 'flex-end',
-            padding: 10,
-            backgroundColor: 'rgba(0,0,0,0.3)'
-          }}
-        >
-          <Text
-            style={{
-              color: '#fff',
-              fontSize: 18,
-              fontWeight: 'bold'
-            }}
-          >
-            {item.name}
-          </Text>
-        </View>
-      </Pressable>
+        <Card.Actions>
+          <Button onPress={() => {}}>Ver</Button>
+        </Card.Actions>
+      </Card>
     );
   };
 
   return (
-    <FlatList
-      data={categories}
-      renderItem={renderCategory}
-      keyExtractor={(item) => item.id.toString()}
-      numColumns={3}
-      contentContainerStyle={{ padding: 10 }}
-    />
+    <View style={styles.container}>
+      {loading && <Text>Cargando categorías...</Text>}
+      {error && <Text style={styles.error}>{error}</Text>}
+      {!loading && !error && categories.length === 0 && (
+        <Text>No hay categorías disponibles.</Text>
+      )}
+
+      <FlatList
+        data={categories}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={renderCategory}
+        numColumns={4}
+        columnWrapperStyle={{ justifyContent: 'center', gap: 16 }}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 8,
+    alignSelf: 'center',
+  },
+  list: {
+    paddingBottom: 16,
+  },
+  card: {
+    margin: 10,
+    width: 200,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
+  },
+});
 
 export default Categories;

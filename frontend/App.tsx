@@ -24,7 +24,21 @@ const setting = {
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export default function App() {
+  const [isReady, setIsReady] = React.useState(false);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  React.useEffect(() => {
+    const init = async () => {
+      await useAuthStore.getState().initialize();
+      setIsReady(true);
+    };
+
+    init();
+  }, []);
+
+  if (!isReady) {
+    return null;
+  }
 
   return (
     <PaperProvider settings={setting}>
