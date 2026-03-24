@@ -118,7 +118,7 @@ const handleLogin = async () => {
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 16, color: 'black' },
+  container: { flex: 1, alignSelf: 'center', padding: 16, color: 'black', width: 400, position: 'absolute', top: '30%' },
   input: { marginBottom: 4, borderWidth: 1, padding: 8, borderRadius: 4 },
   error: { color: 'red', marginBottom: 8 },
 })
