@@ -1,5 +1,6 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -16,13 +17,17 @@ import { useAuthStore } from './features/auth/store/auth.store';
 
 import '@/global.css';
 
+const setting = {
+  icon: (props: any) => <MaterialCommunityIcons {...props} />,
+};
+
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export default function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
-    <PaperProvider>
+    <PaperProvider settings={setting}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {isAuthenticated ? (
