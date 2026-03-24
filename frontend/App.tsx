@@ -1,4 +1,5 @@
 import React from 'react';
+import { Provider as PaperProvider } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -21,7 +22,7 @@ export default function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
-    
+    <PaperProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {isAuthenticated ? (
@@ -38,6 +39,6 @@ export default function App() {
         </Stack.Navigator>
         <Toast />
       </NavigationContainer>
-    
+    </PaperProvider>
   );
 }
