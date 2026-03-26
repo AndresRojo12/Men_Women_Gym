@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Appbar, Avatar, Text, Modal, Portal, Button } from 'react-native-paper';
 import { useAuthStore } from '../../auth/store/auth.store';
 import { api } from '../../auth/services/api';
@@ -54,7 +55,10 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
   };
 
   return (
-    <>
+    <LinearGradient
+      colors={['#000000', '#374151']}
+      style={styles.container}
+    >
       <GlobalModal
         isVisible={isModalVisible}
         title="Cerrar sesión"
@@ -65,9 +69,9 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
         cancelText="Cancelar"
       />
 
-      <Appbar.Header>
-        <Appbar.Content title="Men_Women_Gym" />
-        <Pressable onPress={() => setProfileVisible(true)}>
+      <Appbar.Header style={styles.header}>
+        <Appbar.Content title="Men_Women_Gym" titleStyle={styles.headerTitle} />
+        <Pressable onPress={() => setProfileVisible(true)} style={styles.avatarContainer}>
           <Avatar.Image
             size={40}
             source={{ uri: 'https://randomuser.me/api/portraits/men/36.jpg' }}
@@ -86,7 +90,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
           onDismiss={() => setProfileVisible(false)}
           contentContainerStyle={styles.profileDrawer}
         >
-          <View style={{ alignItems: 'center' }}>
+          <View style={styles.profileContent}>
             <Avatar.Image
               size={70}
               source={{
@@ -94,13 +98,11 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
               }}
             />
 
-            <Text style={{ marginTop: 10, fontWeight: 'bold', fontSize: 18 }}>
-              {profileName}
-            </Text>
+            <Text style={styles.profileName}>{profileName}</Text>
 
             <Button
               mode="contained"
-              style={{ marginTop: 20, backgroundColor: '#4CAF50' }}
+              style={styles.profileButton}
               onPress={() => {
                 setProfileVisible(false);
                 setProfileFormVisible(true);
@@ -112,7 +114,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
             <Button
               mode="contained"
               icon="logout"
-              style={{ marginTop: 12, backgroundColor: '#918585ff' }}
+              style={styles.logoutButton}
               onPress={() => {
                 setProfileVisible(false);
                 setModalVisible(true);
@@ -129,38 +131,82 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
         onDismiss={() => setProfileFormVisible(false)}
         onSave={handleProfileSave}
       />
-    </>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    backgroundColor: '#000000',
+    elevation: 5,
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  avatarContainer: {
+    marginRight: 12,
+  },
   section: {
     marginTop: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 20,
+    alignItems: 'center',
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#d8cfcfff',
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 16,
     marginBottom: 10,
-    color: '#666',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    opacity: 0.9,
   },
   profileDrawer: {
     position: 'absolute',
     right: 0,
     top: 0,
     bottom: 0,
-    width: 260,
-    backgroundColor: 'white',
+    width: 280,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     padding: 20,
     justifyContent: 'center',
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: -2, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
-  buttonGroup: {
-    flexDirection: 'row',
-    marginTop: 20,
+  profileContent: {
+    alignItems: 'center',
+  },
+  profileName: {
+    marginTop: 15,
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: '#00BFFF',
+    textAlign: 'center',
+  },
+  profileButton: {
+    marginTop: 25,
+    backgroundColor: '#00BFFF',
+    borderRadius: 25,
+    width: '80%',
+  },
+  logoutButton: {
+    marginTop: 15,
+    backgroundColor: '#FF4500',
+    borderRadius: 25,
+    width: '80%',
   },
 });
 
