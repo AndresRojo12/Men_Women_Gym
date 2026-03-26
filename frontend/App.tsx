@@ -27,14 +27,22 @@ export default function App() {
   const [isReady, setIsReady] = React.useState(false);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
+  // Si quieres forzar login en cada inicio, pon en false.
+  // Si quieres conservar sesión persistente, pon en true.
+  const usePersistentSession = false;
+
   React.useEffect(() => {
     const init = async () => {
-      await useAuthStore.getState().initialize();
+      if (usePersistentSession) {
+        await useAuthStore.getState().initialize();
+      } else {
+        await useAuthStore.getState().logout();
+      }
       setIsReady(true);
     };
 
     init();
-  }, []);
+  }, [usePersistentSession]);
 
   if (!isReady) {
     return null;
