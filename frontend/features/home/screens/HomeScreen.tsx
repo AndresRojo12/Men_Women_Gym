@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../auth/types/types';
@@ -11,12 +11,14 @@ import {
   Avatar,
   Card,
   ProgressBar,
+  Modal,
+  Portal,
+  List,
 } from 'react-native-paper';
 
 // import traer perfil de usuario para mostrar en el header, por ahora es estático
 import React, { useState, useEffect } from 'react';
 import { api } from '../../auth/services/api';
-import { use } from 'passport';
 
 interface UserProfile {
   id: number;
@@ -30,6 +32,7 @@ const HomeScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [profilevisible, setProfileVisible] = useState(false);
 
   const fetchUserProfile = async () => {
     try {
@@ -47,24 +50,7 @@ const HomeScreen = () => {
   return (
     <ScrollView style={styles.container}>
       {/* CONTROLES SUPERIORES */}
-      <View style={{ marginBottom: 50, alignItems: 'center' }}>
-        <Text>Home Screen</Text>
-
-        <Button
-          mode="contained"
-          onPress={() => navigation.navigate('Categories')}
-        >
-          Grupos musculares
-        </Button>
-
-        <Button
-          mode="outlined"
-          onPress={() => setModalVisible(true)}
-          style={{ marginTop: 10 }}
-        >
-          Logout
-        </Button>
-
+      <View style={{ marginBottom: 10, alignItems: 'center' }}>
         <GlobalModal
           isVisible={isModalVisible}
           title="Cerrar sesión"
@@ -82,18 +68,20 @@ const HomeScreen = () => {
       {/* HEADER */}
       <Appbar.Header>
         <Appbar.Content title="Men_Women_Gym" />
+        <Pressable onPress={() => setProfileVisible(true)}>
         <Avatar.Image
           size={40}
           source={{
             uri: 'https://randomuser.me/api/portraits/men/36.jpg',
           }}
         />
+        </Pressable>
       </Appbar.Header>
 
       {/* SALUDO */}
       <View style={styles.section}>
         <Text style={styles.title}>
-          Hola, {userProfile?.name || 'Usuario'} 💪
+          Hola, {userProfile?.name || 'Usuario'}
         </Text>
         <Text style={styles.subtitle}>Listo para tu entrenamiento de hoy</Text>
       </View>
@@ -130,9 +118,12 @@ const HomeScreen = () => {
         <Text style={styles.subtitle}>Accesos rápidos</Text>
 
         <View style={styles.row}>
-          <Card style={styles.cardMenu}>
+          <Card
+            style={styles.cardMenu}
+            onPress={() => navigation.navigate('Categories')}
+          >
             <Card.Content>
-              <Text>🏋️ Rutinas</Text>
+              <Text>Grupos Musculares</Text>
             </Card.Content>
           </Card>
 
@@ -186,6 +177,38 @@ const HomeScreen = () => {
           </Card.Content>
         </Card>
       </View>
+      <Portal>
+        <Modal
+          visible={profilevisible}
+          onDismiss={() => setProfileVisible(false)}
+          contentContainerStyle={styles.profileDrawer}
+        >
+          <View style={{ alignItems: 'center' }}>
+            <Avatar.Image
+              size={70}
+              source={{
+                uri: 'https://randomuser.me/api/portraits/men/36.jpg',
+              }}
+            />
+
+            <Text style={{ marginTop: 10, fontWeight: 'bold', fontSize: 18 }}>
+              {userProfile?.name || 'Usuario'}
+            </Text>
+
+            <Button
+              mode="contained"
+              icon="logout"
+              style={{ marginTop: 30, backgroundColor: '#918585ff' }}
+              onPress={() => {
+                setProfileVisible(false);
+                setModalVisible(true);
+              }}
+            >
+              Logout
+            </Button>
+          </View>
+        </Modal>
+      </Portal>
     </ScrollView>
   );
 };
@@ -194,6 +217,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    backgroundColor: '#000',
   },
 
   section: {
@@ -203,7 +227,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#d8cfcfff',
   },
 
   subtitle: {
@@ -226,6 +250,17 @@ const styles = StyleSheet.create({
     width: '48%',
     marginBottom: 10,
   },
+
+  profileDrawer: {
+  position: 'absolute',
+  right: 0,
+  top: 0,
+  bottom: 0,
+  width: 260,
+  backgroundColor: 'white',
+  padding: 20,
+  justifyContent: 'center',
+},
 });
 
 export default HomeScreen;
