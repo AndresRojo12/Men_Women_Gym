@@ -1,19 +1,13 @@
-import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../auth/types/types';
-import { useAuthStore } from '../../auth/store/auth.store';
-import GlobalModal from '../../auth/global/components/GlobalModal';
 import MainHeader from '../../common/components/MainHeader';
 import {
-  Avatar,
   Text,
   Button,
   Card,
   ProgressBar,
-  Modal,
-  Portal,
-  List,
 } from 'react-native-paper';
 
 // import traer perfil de usuario para mostrar en el header, por ahora es estático
@@ -28,11 +22,8 @@ interface UserProfile {
 const HomeScreen = () => {
   type HomeNavProp = NativeStackNavigationProp<AuthStackParamList, 'Home'>;
   const navigation = useNavigation<HomeNavProp>();
-  const logout = useAuthStore((state) => state.logout);
-  const [isModalVisible, setModalVisible] = useState(false);
 
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [profilevisible, setProfileVisible] = useState(false);
 
   const fetchUserProfile = async () => {
     try {
@@ -51,23 +42,10 @@ const HomeScreen = () => {
     <ScrollView style={styles.container}>
       {/* CONTROLES SUPERIORES */}
       <View style={{ marginBottom: 10, alignItems: 'center' }}>
-        <GlobalModal
-          isVisible={isModalVisible}
-          title="Cerrar sesión"
-          message="¿Estás seguro que deseas cerrar sesión?"
-          onCancel={() => setModalVisible(false)}
-          onConfirm={() => {
-            setModalVisible(false);
-            logout();
-          }}
-          confirmText="Sí, cerrar"
-          cancelText="Cancelar"
-        />
       </View>
 
       <MainHeader
         userName={userProfile?.name}
-        onPressAvatar={() => setProfileVisible(true)}
       />
 
       {/* ESTADISTICAS */}
@@ -161,38 +139,6 @@ const HomeScreen = () => {
           </Card.Content>
         </Card>
       </View>
-      <Portal>
-        <Modal
-          visible={profilevisible}
-          onDismiss={() => setProfileVisible(false)}
-          contentContainerStyle={styles.profileDrawer}
-        >
-          <View style={{ alignItems: 'center' }}>
-            <Avatar.Image
-              size={70}
-              source={{
-                uri: 'https://randomuser.me/api/portraits/men/36.jpg',
-              }}
-            />
-
-            <Text style={{ marginTop: 10, fontWeight: 'bold', fontSize: 18 }}>
-              {userProfile?.name || 'Usuario'}
-            </Text>
-
-            <Button
-              mode="contained"
-              icon="logout"
-              style={{ marginTop: 30, backgroundColor: '#918585ff' }}
-              onPress={() => {
-                setProfileVisible(false);
-                setModalVisible(true);
-              }}
-            >
-              Logout
-            </Button>
-          </View>
-        </Modal>
-      </Portal>
     </ScrollView>
   );
 };
@@ -206,12 +152,6 @@ const styles = StyleSheet.create({
 
   section: {
     marginTop: 15,
-  },
-
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#d8cfcfff',
   },
 
   subtitle: {
@@ -234,17 +174,6 @@ const styles = StyleSheet.create({
     width: '48%',
     marginBottom: 10,
   },
-
-  profileDrawer: {
-  position: 'absolute',
-  right: 0,
-  top: 0,
-  bottom: 0,
-  width: 260,
-  backgroundColor: 'white',
-  padding: 20,
-  justifyContent: 'center',
-},
 });
 
 export default HomeScreen;

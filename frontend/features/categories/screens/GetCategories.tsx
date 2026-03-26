@@ -5,7 +5,7 @@ import MainHeader from '../../common/components/MainHeader';
 
 const CategoriesScreen = () => (
   <View style={{ flex: 1 }}>
-    <MainHeader onPressAvatar={() => {}} />
+    <MainHeader />
     <Categories />
   </View>
 );
