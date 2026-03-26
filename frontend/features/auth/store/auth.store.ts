@@ -40,9 +40,29 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   initialize: async () => {
     const token = await getToken();
-    if (token) {
+
+    const isTokenExpired = (tokenValue: string): boolean => {
+      if (!tokenValue) {
+        return true;
+      }
+
+      try {
+        const payloadBase64 = tokenValue.split('.')[1];
+        const payloadJson = typeof atob === 'function'
+          ? atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'))
+          : Buffer.from(payloadBase64, 'base64').toString('utf8');
+
+        const payload = JSON.parse(payloadJson);
+        return typeof payload.exp === 'number' ? payload.exp * 1000 < Date.now() : true;
+      } catch (err) {
+        return true;
+      }
+    };
+
+    if (token && !isTokenExpired(token)) {
       set({ token, isAuthenticated: true });
     } else {
+      await removeToken();
       set({ token: null, isAuthenticated: false });
     }
   },

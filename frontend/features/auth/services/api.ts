@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { getToken } from './storage';
 import { Platform } from 'react-native';
+import { useAuthStore } from '../store/auth.store';
 
 // determine base URL depending on runtime environment
 const getBaseUrl = () => {
@@ -39,8 +40,15 @@ api.interceptors.request.use(async (config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    console.error('[API] response error', error.response?.status, error.response?.data, error.message);
+  async (error) => {
+    const status = error.response?.status;
+    console.error('[API] response error', status, error.response?.data, error.message);
+
+    if (status === 401 || status === 403) {
+      console.warn('[API] token inválido o expirado, forzando logout y redirigiendo');
+      await useAuthStore.getState().logout();
+    }
+
     return Promise.reject(error);
   },
 );
