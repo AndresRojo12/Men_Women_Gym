@@ -72,9 +72,9 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
       <Appbar.Header style={styles.header}>
         <Appbar.Content title="Men_Women_Gym" titleStyle={styles.headerTitle} />
         <Pressable onPress={() => setProfileVisible(true)} style={styles.avatarContainer}>
-          <Avatar.Image
+          <Avatar.Text
             size={40}
-            source={{ uri: 'https://randomuser.me/api/portraits/men/36.jpg' }}
+            label={profileName.charAt(0).toUpperCase()}
           />
         </Pressable>
       </Appbar.Header>
@@ -91,11 +91,9 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
           contentContainerStyle={styles.profileDrawer}
         >
           <View style={styles.profileContent}>
-            <Avatar.Image
+            <Avatar.Text
               size={70}
-              source={{
-                uri: 'https://randomuser.me/api/portraits/men/36.jpg',
-              }}
+                label={profileName.charAt(0).toUpperCase()}
             />
 
             <Text style={styles.profileName}>{profileName}</Text>
