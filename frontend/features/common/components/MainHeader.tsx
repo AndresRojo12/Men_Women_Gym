@@ -4,30 +4,38 @@ import { Appbar, Avatar, Text, Modal, Portal, Button } from 'react-native-paper'
 import { useAuthStore } from '../../auth/store/auth.store';
 import { api } from '../../auth/services/api';
 import GlobalModal from '../../auth/global/components/GlobalModal';
+import ProfileForm from '../../users/components/ProfileForm';
 
 interface MainHeaderProps {
   userName?: string;
+}
+
+interface UserProfile {
+  id: number;
+  name: string;
+  email?: string;
+  phone?: string;
+  age?: number;
+  gender?: string;
 }
 
 const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
   const [profileName, setProfileName] = useState<string>('Usuario');
   const [profileVisible, setProfileVisible] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [profileFormVisible, setProfileFormVisible] = useState(false);
   const logout = useAuthStore((state) => state.logout);
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (userName) {
-        setProfileName(userName);
-        return;
-      }
-
       try {
-        const response = await api.get<{ id: number; name: string }>('/customers/me');
+        const response = await api.get<UserProfile>('/customers/me');
         setProfileName(response.data.name || 'Usuario');
       } catch (error) {
         console.warn('No se pudo obtener el nombre de usuario:', error);
-        setProfileName('Usuario');
+        if (userName) {
+          setProfileName(userName);
+        }
       }
     };
 
@@ -38,6 +46,11 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
     setModalVisible(false);
     setProfileVisible(false);
     await logout();
+  };
+
+  const handleProfileSave = (updatedProfile: UserProfile) => {
+    setProfileName(updatedProfile.name || 'Usuario');
+    setProfileFormVisible(false);
   };
 
   return (
@@ -87,8 +100,19 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
 
             <Button
               mode="contained"
+              style={{ marginTop: 20, backgroundColor: '#4CAF50' }}
+              onPress={() => {
+                setProfileVisible(false);
+                setProfileFormVisible(true);
+              }}
+            >
+              Perfil
+            </Button>
+
+            <Button
+              mode="contained"
               icon="logout"
-              style={{ marginTop: 30, backgroundColor: '#918585ff' }}
+              style={{ marginTop: 12, backgroundColor: '#918585ff' }}
               onPress={() => {
                 setProfileVisible(false);
                 setModalVisible(true);
@@ -99,6 +123,12 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
           </View>
         </Modal>
       </Portal>
+
+      <ProfileForm
+        visible={profileFormVisible}
+        onDismiss={() => setProfileFormVisible(false)}
+        onSave={handleProfileSave}
+      />
     </>
   );
 };
@@ -127,6 +157,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     justifyContent: 'center',
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    marginTop: 20,
   },
 });
 
