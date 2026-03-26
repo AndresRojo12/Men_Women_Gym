@@ -27,9 +27,8 @@ export default function App() {
   const [isReady, setIsReady] = React.useState(false);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  // Si quieres forzar login en cada inicio, pon en false.
-  // Si quieres conservar sesión persistente, pon en true.
-  const usePersistentSession = false;
+  // Mantener sesión persistente al recargar (a menos que token ya esté vencido/401).
+  const usePersistentSession = true;
 
   React.useEffect(() => {
     const init = async () => {

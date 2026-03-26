@@ -4,11 +4,11 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../auth/types/types';
 import { useAuthStore } from '../../auth/store/auth.store';
 import GlobalModal from '../../auth/global/components/GlobalModal';
+import MainHeader from '../../common/components/MainHeader';
 import {
-  Appbar,
+  Avatar,
   Text,
   Button,
-  Avatar,
   Card,
   ProgressBar,
   Modal,
@@ -65,26 +65,10 @@ const HomeScreen = () => {
         />
       </View>
 
-      {/* HEADER */}
-      <Appbar.Header>
-        <Appbar.Content title="Men_Women_Gym" />
-        <Pressable onPress={() => setProfileVisible(true)}>
-        <Avatar.Image
-          size={40}
-          source={{
-            uri: 'https://randomuser.me/api/portraits/men/36.jpg',
-          }}
-        />
-        </Pressable>
-      </Appbar.Header>
-
-      {/* SALUDO */}
-      <View style={styles.section}>
-        <Text style={styles.title}>
-          Hola, {userProfile?.name || 'Usuario'}
-        </Text>
-        <Text style={styles.subtitle}>Listo para tu entrenamiento de hoy</Text>
-      </View>
+      <MainHeader
+        userName={userProfile?.name}
+        onPressAvatar={() => setProfileVisible(true)}
+      />
 
       {/* ESTADISTICAS */}
       <View style={styles.row}>
