@@ -86,55 +86,57 @@ const LoginForm = ({ onSubmit, onGoToRegister }: LoginFormProps) => {
   };
 
   return (
-  <View style={styles.screen}>
-    
-    {/* Fondo con la silueta */}
-    <ImageBackground
-      source={require('@/assets/gym.png')}
-      style={styles.background}
-      imageStyle={styles.backgroundImage}
-      resizeMode="contain"
-    />
-
-    {/* Login encima */}
-    <View style={styles.container}>
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={(text) => {
-          setEmail(text);
-          setErrors((prev) => ({ ...prev, email: undefined }));
-        }}
-        style={styles.input}
+    <View style={styles.screen}>
+      {/* Fondo con la silueta */}
+      <ImageBackground
+        source={require('@/assets/gym.png')}
+        style={styles.background}
+        imageStyle={styles.backgroundImage}
+        resizeMode="contain"
       />
 
-      {errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
-
-      <TextInput
-        placeholder="Password"
-        value={password}
-        secureTextEntry
-        onChangeText={(text) => {
-          setPassword(text);
-          setErrors((prev) => ({ ...prev, password: undefined }));
-        }}
-        style={styles.input}
-      />
-
-      {errors.password ? <Text style={styles.error}>{errors.password}</Text> : null}
-
-      <Button title="Login" onPress={handleLogin} />
-
-      <View style={{ marginTop: 12 }}>
-        <Button
-          title="¿No tienes cuenta? Regístrate"
-          onPress={onGoToRegister}
+      {/* Login encima */}
+      <View style={styles.container}>
+        <TextInput
+          placeholder="Correo electrónico"
+          value={email}
+          onChangeText={(text) => {
+            setEmail(text);
+            setErrors((prev) => ({ ...prev, email: undefined }));
+          }}
+          style={styles.input}
         />
+
+        {errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
+
+        <TextInput
+          placeholder="Contraseña"
+          value={password}
+          secureTextEntry
+          onChangeText={(text) => {
+            setPassword(text);
+            setErrors((prev) => ({ ...prev, password: undefined }));
+          }}
+          style={styles.input}
+        />
+
+        {errors.password ? (
+          <Text style={styles.error}>{errors.password}</Text>
+        ) : null}
+
+        <View style={styles.buttonContainer}>
+          <Button title="Iniciar Sesión" onPress={handleLogin} color="#b9b4b4ff" />
+        </View>
+
+        <View style={styles.buttonContainers}>
+          <Button
+            title="¿No tienes cuenta? Regístrate"
+            onPress={onGoToRegister} color="transparent"
+          />
+        </View>
       </View>
     </View>
-
-  </View>
-);
+  );
 };
 
 const styles = StyleSheet.create({
@@ -150,7 +152,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '35%',
   },
-  input: { marginBottom: 4, borderWidth: 1, padding: 8, borderRadius: 4 },
+  input: {
+    marginBottom: 12,
+    borderWidth: 2,
+    padding: 12,
+    borderRadius: 10,
+    borderColor: '#d4cfcfee',
+  },
   error: { color: 'red', marginBottom: 8 },
   background: {
     position: 'absolute',
@@ -165,6 +173,24 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '90%',
     resizeMode: 'contain',
+  },
+
+  buttonContainer: {
+    borderWidth: 2,
+    borderColor: '#b0b9b0ff',
+    borderRadius: 12,
+    backgroundColor: '#b0b9b0ff',
+    overflow: 'hidden',
+    marginBottom: 12,
+  },
+
+  buttonContainers: {
+    borderWidth: 2,
+    borderRadius: 12,
+    borderColor: '#b0b9b0ff',
+    backgroundColor: '#b0b9b0ff',
+    overflow: 'hidden',
+    marginBottom: 12,
   },
 });
 
