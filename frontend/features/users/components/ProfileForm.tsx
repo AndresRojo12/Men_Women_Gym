@@ -138,9 +138,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ visible, onDismiss, onSave })
           <View style={styles.buttonGroup}>
             <Button
               mode="contained"
-              style={{ flex: 1, marginRight: 8, backgroundColor: '#4CAF50' }}
+              style={{ flex: 1, marginRight: 8, backgroundColor: '#6b6e6bff' }}
               onPress={handleUpdateProfile}
               disabled={loading}
+              textColor='white'
             >
               {loading ? 'Guardando...' : 'Guardar'}
             </Button>
@@ -148,6 +149,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ visible, onDismiss, onSave })
               mode="outlined"
               style={{ flex: 1 }}
               onPress={onDismiss}
+              textColor='#000'
             >
               Cancelar
             </Button>
@@ -165,6 +167,8 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 16,
     maxHeight: '90%',
+    width: '20%',
+    alignSelf: 'center',
   },
   formContainer: {
     paddingBottom: 10,
