@@ -43,4 +43,5 @@ export type AuthStackParamList = {
   Register: undefined;
   Home: undefined;
   Categories: undefined;
+  Exercises: undefined;
 };

@@ -12,6 +12,8 @@ import HomeScreen from './features/home/screens/HomeScreen';
 
 // screen categories
 import CategoriesScreen from './features/categories/screens/GetCategories';
+// screen exercises
+import ExercisesScreen from './features/exercises/screens/GetExercises';
 
 import { useAuthStore } from './features/auth/store/auth.store';
 
@@ -54,7 +56,7 @@ export default function App() {
           {isAuthenticated ? (
             <>
               <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Categories" component={CategoriesScreen} />
+              <Stack.Screen name="Exercises" component={ExercisesScreen} />
             </>
           ) : (
             <>

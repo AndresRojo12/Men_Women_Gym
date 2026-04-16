@@ -88,10 +88,10 @@ const HomeScreen = () => {
           <View style={styles.row}>
             <Card
               style={styles.cardMenu}
-              onPress={() => navigation.navigate('Categories')}
+              onPress={() => navigation.navigate('Exercises')}
             >
               <Card.Content>
-                <Text style={styles.menuText}>Grupos Musculares</Text>
+                <Text style={styles.menuText}>Ejercicios</Text>
               </Card.Content>
             </Card>
 
