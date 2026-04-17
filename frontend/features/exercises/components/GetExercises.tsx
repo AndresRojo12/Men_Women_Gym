@@ -22,6 +22,7 @@ function GetExercises() {
 
     try {
       const response = await api.get<Exercise[]>('/exercises');
+      console.log("EJERCICIOS:", response.data);
       setExercises(response.data);
     } catch (err: any) {
       console.error(

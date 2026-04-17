@@ -5,7 +5,7 @@ import { Roles } from '../..//auth/decorators/roles.decorator';
 import { Role } from '../../auth/roles/rol.enum';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { multerConfig } from 'src/common/config/multer.config';
+import { multerExerciseConfig } from 'src/common/config/multer.exercises.config';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('exercises')
@@ -14,7 +14,7 @@ export class ExercisesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
-  @UseInterceptors(FileInterceptor('file', multerConfig))
+  @UseInterceptors(FileInterceptor('file', multerExerciseConfig))
   createExercise(
     @UploadedFile() file: Express.Multer.File,
     @Body() data: CreateExerciseDto){
