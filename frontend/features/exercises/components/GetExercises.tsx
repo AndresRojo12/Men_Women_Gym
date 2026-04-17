@@ -68,6 +68,7 @@ function GetExercises() {
         <FlatList
           data={exercises}
           renderItem={renderExercise}
+          numColumns={4}
           keyExtractor={(item) => String(item.id)}
         />
         )}
@@ -79,14 +80,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  
+    alignSelf: 'center',
   },
   card: {
-    marginBottom: 16,
+    margin: 10,
+    width: 350,
   },
   error: {
     color: 'red',
     textAlign: 'center',
-    marginBottom: 16,
+    margin: 16,
   },
 });
 
