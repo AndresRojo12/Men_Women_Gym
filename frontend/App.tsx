@@ -5,17 +5,17 @@ import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthStackParamList } from './features/auth/types/types';
+import { useAuthStore } from './features/auth/store/auth.store';
 
 import LoginScreen from './features/auth/screens/LoginScreen';
 import { RegisterScreen } from './features/auth/screens/RegisterScreen';
 import HomeScreen from './features/home/screens/HomeScreen';
+import AdminDashboard from './features/auth/screens/AdminScreen';
 
 // screen categories
 import CategoriesScreen from './features/categories/screens/GetCategories';
 // screen exercises
 import ExercisesScreen from './features/exercises/screens/GetExercises';
-
-import { useAuthStore } from './features/auth/store/auth.store';
 
 import '@/global.css';
 
@@ -27,7 +27,7 @@ const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export default function App() {
   const [isReady, setIsReady] = React.useState(false);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { user, isAuthenticated } = useAuthStore();
 
   // Mantener sesión persistente al recargar (a menos que token ya esté vencido/401).
   const usePersistentSession = true;
@@ -54,10 +54,11 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {isAuthenticated ? (
-            <>
+            user?.role === 'admin' ? (
+              <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
+            ) : (
               <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Exercises" component={ExercisesScreen} />
-            </>
+            )
           ) : (
             <>
               <Stack.Screen name="Login" component={LoginScreen} />

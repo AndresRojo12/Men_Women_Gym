@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { loginRequest } from '../services/auth.api';
+import { loginRequest, getCurrentUser } from '../services/auth.api';
 import { setToken, getToken, removeToken } from '../services/storage';
 
 interface AuthState {
@@ -21,8 +21,10 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     await setToken(access_token);
 
+    const user = await getCurrentUser(access_token);
+
     set({
-      user: null,
+      user,
       token: access_token,
       isAuthenticated: true,
     });
@@ -48,22 +50,31 @@ export const useAuthStore = create<AuthState>((set) => ({
 
       try {
         const payloadBase64 = tokenValue.split('.')[1];
-        const payloadJson = typeof atob === 'function'
-          ? atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'))
-          : Buffer.from(payloadBase64, 'base64').toString('utf8');
+        const payloadJson =
+          typeof atob === 'function'
+            ? atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'))
+            : Buffer.from(payloadBase64, 'base64').toString('utf8');
 
         const payload = JSON.parse(payloadJson);
-        return typeof payload.exp === 'number' ? payload.exp * 1000 < Date.now() : true;
+        return typeof payload.exp === 'number'
+          ? payload.exp * 1000 < Date.now()
+          : true;
       } catch (err) {
         return true;
       }
     };
-
     if (token && !isTokenExpired(token)) {
-      set({ token, isAuthenticated: true });
+      const user = await getCurrentUser(token);
+
+      set({ token, user, isAuthenticated: true });
     } else {
       await removeToken();
-      set({ token: null, isAuthenticated: false });
+
+      set({
+        token: null,
+        user: null,
+        isAuthenticated: false,
+      });
     }
   },
 }));
