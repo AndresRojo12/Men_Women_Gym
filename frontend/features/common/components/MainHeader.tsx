@@ -135,11 +135,12 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    paddingBottom: 10,
   },
   header: {
     backgroundColor: '#000000',
     elevation: 5,
+    
   },
   headerTitle: {
     color: '#FFFFFF',

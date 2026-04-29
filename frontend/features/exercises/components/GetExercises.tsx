@@ -70,6 +70,8 @@ function GetExercises() {
           renderItem={renderExercise}
           numColumns={4}
           keyExtractor={(item) => String(item.id)}
+          scrollEnabled={true}
+          showsVerticalScrollIndicator={false}
         />
         )}
     </View>
