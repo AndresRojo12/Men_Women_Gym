@@ -97,7 +97,7 @@ const HomeScreen = () => {
 
             <Card style={styles.cardMenu}>
               <Card.Content>
-                <Text style={styles.menuText}>🥗 Nutrición</Text>
+                <Text style={styles.menuText}>Rutinas</Text>
               </Card.Content>
             </Card>
           </View>
