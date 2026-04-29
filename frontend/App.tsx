@@ -57,7 +57,10 @@ export default function App() {
             user?.role === 'admin' ? (
               <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
             ) : (
+              <>
               <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Exercises" component={ExercisesScreen} />
+              </>
             )
           ) : (
             <>
