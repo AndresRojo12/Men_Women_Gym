@@ -26,6 +26,13 @@ export const api = axios.create({
   },
 });
 
+export const apiMultipart = axios.create({
+  baseURL: defaultUrl,
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
+});
+
 api.interceptors.request.use(async (config) => {
   const token = await getToken();
 

@@ -1,4 +1,4 @@
-import { api } from '../services/api';
+import { api, apiMultipart } from '../services/api';
 
 export const loginRequest = async (email: string, password: string) => {
   try {
@@ -36,4 +36,31 @@ export const getCurrentUser = async (token: string) => {
   });
 
   return res.data;
+};
+
+export const CreateCategoryRequest = async (
+  name: string,
+  file: any,
+  token: string,
+) => {
+  try {
+    const formData = new FormData();
+
+    formData.append('name', name);
+
+    const imageResponse = await fetch(file.uri);
+    const blob = await imageResponse.blob();
+
+    formData.append('file', blob, 'image.jpg');
+
+    const response = await apiMultipart.post('/categories', formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw error;
+  }
 };
