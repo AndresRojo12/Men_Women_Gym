@@ -38,28 +38,69 @@ export const getCurrentUser = async (token: string) => {
   return res.data;
 };
 
-export const CreateCategoryRequest = async (
-  name: string,
-  file: any,
-  token: string,
-) => {
+export const CategoryRequest = async ({
+  action,
+  data,
+  file,
+  token,
+  id,
+}: {
+  action: 'create' | 'update' | 'delete';
+  data?: {
+    name: string;
+  };
+  file?: any;
+  token: string;
+  id?: string;
+}) => {
   try {
+    // ELIMINAR
+    if (action === 'delete') {
+      const response = await api.delete(`/categories/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    }
+
+    // CREAR / ACTUALIZAR
     const formData = new FormData();
 
-    formData.append('name', name);
+    if (data?.name) {
+      formData.append('name', data.name);
+    }
 
-    const imageResponse = await fetch(file.uri);
-    const blob = await imageResponse.blob();
+    if (file?.uri) {
+      const imageResponse = await fetch(file.uri);
 
-    formData.append('file', blob, 'image.jpg');
+      const blob = await imageResponse.blob();
 
-    const response = await apiMultipart.post('/categories', formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      formData.append('file', blob, 'image.jpg');
+    }
 
-    return response.data;
+    let response;
+
+    // CREAR
+    if (action === 'create') {
+      response = await apiMultipart.post('/categories', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+
+    // ACTUALIZAR
+    if (action === 'update') {
+      response = await api.put(`/categories/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+
+    return response?.data;
   } catch (error: any) {
     throw error;
   }

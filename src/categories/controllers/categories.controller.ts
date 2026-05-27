@@ -10,6 +10,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import type { Express } from 'express';
 import { multerConfig } from 'src/common/config/multer.config';
@@ -33,12 +34,10 @@ export class CategoriesController {
     @UploadedFile() file: Express.Multer.File,
     @Body() data: CreateCategoryDto,
   ) {
-
     if (!file) {
-      throw new Error('File is required');
+      throw new BadRequestException('File is required');
     }
     return this.categoriesService.create({ ...data, image: file.filename });
-    
   }
 
   @Get()

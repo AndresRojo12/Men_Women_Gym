@@ -13,26 +13,42 @@ type FormData = {
   name: string;
 };
 
+type Category = {
+  id?: string;
+  name?: string;
+};
+
 type Props = {
   pickImage: () => void;
   file: any;
   onSubmit: (data: FormData) => void;
+  onDelete?: () => void;
+  category?: Category;
 };
 
 export default function CreateCategoryForm({
   pickImage,
   file,
   onSubmit,
+  onDelete,
+  category,
 }: Props) {
+  const isEdit = !!category?.id;
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<FormData>({
+    defaultValues: {
+      name: category?.name || '',
+    },
+  });
 
   return (
     <View>
-      <Text style={styles.text}>Crear categoría</Text>
+      <Text style={styles.text}>
+        {isEdit ? 'Actualizar categoría' : 'Crear categoría'}
+      </Text>
 
       <Controller
         control={control}
@@ -64,8 +80,19 @@ export default function CreateCategoryForm({
       {errors.file && <Text style={styles.error}>{errors.file.message}</Text>}
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
-        <Text style={styles.buttonText}>Crear categoría</Text>
+        <Text style={styles.buttonText}>
+          {isEdit ? 'Actualizar categoría' : 'Crear categoría'}
+        </Text>
       </TouchableOpacity>
+
+      {isEdit && onDelete && (
+        <TouchableOpacity
+          style={[styles.button, styles.deleteButton]}
+          onPress={onDelete}
+        >
+          <Text style={styles.buttonText}>Eliminar categoría</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -96,5 +123,8 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     marginBottom: 10,
+  },
+  deleteButton: {
+    backgroundColor: '#dc2626',
   },
 });
