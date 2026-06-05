@@ -111,7 +111,7 @@ export default function CreateCategoryForm({
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: 600,
     paddingVertical: 12,
   },
   headerRow: {

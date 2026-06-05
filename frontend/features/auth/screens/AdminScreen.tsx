@@ -8,8 +8,11 @@ import {
   FlatList,
   ScrollView,
   Pressable,
+  Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import RNModal from 'react-native-modal';
 
 import CreateCategoryForm from '../../categories/components/CreateCategoryForm';
 import ProfileForm from '../../users/components/ProfileForm';
@@ -37,10 +40,10 @@ const AdminDashboard = () => {
     email: user?.email || '',
   });
   const [visible, setVisible] = useState(false);
-  const [gridVisible, setGridVisible] = useState(false);
   const [file, setFile] = useState<any>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [hoveredCategory, setHoveredCategory] = useState<string | number | null>(null);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<any>(null);
 
@@ -189,28 +192,82 @@ const AdminDashboard = () => {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Tus acciones</Text>
-          <View style={styles.actionRow}>
+          <Text style={styles.sectionTitle}>Categorías existentes</Text>
+          <View style={styles.gridHeaderRow}>
+            <Text style={styles.gridSectionSubtitle}>Galería de categorías disponibles</Text>
             <TouchableOpacity
-              style={styles.actionCard}
+              style={styles.createGridButton}
               onPress={() => {
                 setSelectedCategory(null);
                 setFile(null);
                 setVisible(true);
               }}
             >
-              <Text style={styles.actionCardTitle}>Crear categoría</Text>
-              <Text style={styles.actionCardSubtitle}>Agregar un nuevo bloque al catálogo.</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => setGridVisible(true)}
-            >
-              <Text style={styles.actionCardTitle}>Ver categorías</Text>
-              <Text style={styles.actionCardSubtitle}>Explorar y editar las categorías existentes.</Text>
+              <Text style={styles.createGridButtonText}>Crear categoría</Text>
             </TouchableOpacity>
           </View>
+          <FlatList
+            data={categories}
+            numColumns={4}
+            keyExtractor={(item: any) => item.id.toString()}
+            columnWrapperStyle={styles.gridRow}
+            contentContainerStyle={styles.gridContent}
+            renderItem={({ item }) => {
+              const isHovered = hoveredCategory === item.id;
+              return (
+                <View style={styles.categoryItem}>
+                  <Pressable
+                    onHoverIn={() => setHoveredCategory(item.id)}
+                    onHoverOut={() => setHoveredCategory(null)}
+                    onPress={() => {
+                      setSelectedCategory(item);
+                      setVisible(true);
+                    }}
+                    style={styles.categoryImageWrapper}
+                  >
+                    <Image
+                      source={{ uri: item.image || 'https://picsum.photos/300' }}
+                      style={[
+                        styles.categoryImage,
+                        isHovered && styles.categoryImageHover,
+                      ]}
+                    />
+                  </Pressable>
+                  <Text style={styles.categoryName} numberOfLines={1}>
+                    {item.name}
+                  </Text>
+                  <View style={styles.categoryIconRow}>
+                    <Pressable
+                      style={[styles.iconButton]}
+                      onPress={() => {
+                        setSelectedCategory(item);
+                        setVisible(true);
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        name="pencil-outline"
+                        size={18}
+                        color="#fff"
+                      />
+                    </Pressable>
+                    <Pressable
+                      style={[styles.iconButton]}
+                      onPress={() => {
+                        setCategoryToDelete(item);
+                        setConfirmVisible(true);
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        name="trash-can-outline"
+                        size={18}
+                        color="#fff"
+                      />
+                    </Pressable>
+                  </View>
+                </View>
+              );
+            }}
+          />
         </View>
 
         <View style={styles.section}>
@@ -226,13 +283,6 @@ const AdminDashboard = () => {
             </View>
           </View>
         </View>
-
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
-        </TouchableOpacity>
       </ScrollView>
 
       <GlobalModal
@@ -245,10 +295,16 @@ const AdminDashboard = () => {
         cancelText="Cancelar"
       />
 
-      <Modal visible={profileVisible} animationType="slide" transparent>
-        <View style={styles.modalContainer}>
-          <View style={styles.profileModalContent}>
-            <Text style={styles.modalTitle}>Perfil</Text>
+      <RNModal
+        isVisible={profileVisible}
+        animationIn="slideInRight"
+        animationOut="slideOutRight"
+        backdropOpacity={0.55}
+        onBackdropPress={() => setProfileVisible(false)}
+        style={styles.profileModalWrapper}
+      >
+        <View style={styles.profileModalContent}>
+          <Text style={styles.modalTitle}>Perfil</Text>
             <View style={styles.profileInfoRow}>
               <View style={styles.profileAvatarLarge}>
                 <Text style={styles.profileAvatarLetter}>
@@ -285,8 +341,7 @@ const AdminDashboard = () => {
               <Text style={styles.closeModalButtonText}>Cancelar</Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
+      </RNModal>
 
       <ProfileForm
         visible={profileFormVisible}
@@ -320,53 +375,6 @@ const AdminDashboard = () => {
         </View>
       </Modal>
 
-      <Modal visible={gridVisible} animationType="slide" transparent>
-        <View style={styles.modalContainer}>
-          <View style={styles.gridModalContent}>
-            <Text style={styles.modalTitle}>Categorías</Text>
-            <FlatList
-              data={categories}
-              numColumns={2}
-              keyExtractor={(item: any) => item.id.toString()}
-              columnWrapperStyle={styles.gridRow}
-              renderItem={({ item }) => (
-                <View style={styles.gridItem}>
-                  <Text style={styles.gridTitle}>{item.name}</Text>
-                  <View style={styles.gridActions}>
-                    <TouchableOpacity
-                      style={[styles.smallActionButton, styles.editButton]}
-                      onPress={() => {
-                        setSelectedCategory(item);
-                        setGridVisible(false);
-                        setVisible(true);
-                      }}
-                    >
-                      <Text style={styles.actionText}>Editar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={[styles.smallActionButton, styles.deleteButton]}
-                      onPress={() => {
-                        setCategoryToDelete(item);
-                        setConfirmVisible(true);
-                      }}
-                    >
-                      <Text style={styles.actionText}>Eliminar</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-            />
-
-            <TouchableOpacity
-              style={styles.closeModalButton}
-              onPress={() => setGridVisible(false)}
-            >
-              <Text style={styles.closeModalButtonText}>Cerrar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
       <Modal visible={confirmVisible} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.confirmModal}>
@@ -388,7 +396,6 @@ const AdminDashboard = () => {
                   await deleteCategory(categoryToDelete.id);
                   setConfirmVisible(false);
                   setCategoryToDelete(null);
-                  setGridVisible(false);
                 }}
               >
                 <Text style={styles.actionText}>Eliminar</Text>
@@ -544,7 +551,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 999,
     alignItems: 'center',
-    marginHorizontal: 20,
+    marginHorizontal: 2,
+    width: '80%',
   },
   logoutButtonText: {
     color: '#fff',
@@ -554,6 +562,12 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    padding: 20,
+  },
+  profileModalWrapper: {
+    flex: 1,
+    alignItems: 'flex-end',
     backgroundColor: 'rgba(0,0,0,0.55)',
     padding: 20,
   },
@@ -571,7 +585,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   closeModalButton: {
-    backgroundColor: '#0ea5e9',
+    backgroundColor: '#0e2733',
     marginTop: 20,
     paddingVertical: 14,
     borderRadius: 999,
@@ -584,8 +598,10 @@ const styles = StyleSheet.create({
   profileModalContent: {
     backgroundColor: '#111827',
     borderRadius: 24,
-    padding: 24,
-    width: '100%',
+    padding: 22,
+    width: '90%',
+    maxWidth: 340,
+    alignSelf: 'center',
   },
   profileInfoRow: {
     flexDirection: 'row',
@@ -620,11 +636,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   profileActionButton: {
-    backgroundColor: '#22c55e',
+    backgroundColor: '#2289c5',
     borderRadius: 16,
-    paddingVertical: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
     alignItems: 'center',
     marginBottom: 12,
+    minWidth: 200,
   },
   profileActionText: {
     color: '#ffffff',
@@ -643,28 +661,96 @@ const styles = StyleSheet.create({
     backgroundColor: '#111827',
     padding: 24,
     borderRadius: 24,
-    maxHeight: '85%',
+  },
+  gridHeaderRow: {
+    flexDirection: 'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    marginBottom: 18,
+    gap: 12,
+    maxHeight: '50%',
+
+  },
+  gridSectionSubtitle: {
+    color: '#cbd5e1',
+    fontSize: 14,
+    flex: 1,
+    marginRight: 12,
+  },
+  createGridButton: {
+    backgroundColor: '#6366f1',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 16,
+  },
+  createGridButtonText: {
+    color: '#fff',
+    fontWeight: '800',
   },
   gridRow: {
     justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  gridContent: {
+    paddingBottom: 16,
+    width: '100%',
+  },
+  categoryItem: {
+    flex: 1,
+    backgroundColor: '#0f172a',
+    borderRadius: 22,
+    marginBottom: 18,
+    width: 180,
+    minWidth: 180,
+    alignItems: 'center',
+    padding: 16,
+  },
+  categoryImageWrapper: {
+    borderRadius: 22,
+    overflow: 'hidden',
     marginBottom: 12,
   },
-  gridItem: {
-    backgroundColor: '#0f172a',
-    width: '48%',
-    padding: 18,
-    borderRadius: 20,
-    marginBottom: 14,
+  categoryImage: {
+    width: 180,
+    height: 300,
+    borderRadius: 22,
+    backgroundColor: '#1f2937',
   },
-  gridTitle: {
+  categoryImageHover: {
+    transform: [{ scale: 1.05 }],
+  },
+  categoryName: {
     color: '#f8fafc',
-    fontWeight: '700',
-    fontSize: 16,
-    marginBottom: 14,
+    fontSize: 14,
+    fontWeight: '800',
+    textAlign: 'center',
+    marginBottom: 12,
   },
-  gridActions: {
+  categoryIconRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+  },
+  iconButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+    borderRadius: 14,
+    marginHorizontal: 4,
+  },
+  
+  categoryButtons: {
+    width: '100%',
+    gap: 6,
+  },
+  categoryActionButton: {
+    borderRadius: 14,
+    paddingVertical: 6,
+    alignItems: 'center',
+  },
+  categoryEditButton: {
+    backgroundColor: '#3b82f6',
+  },
+  categoryDeleteButton: {
+    backgroundColor: '#ef4444',
   },
   smallActionButton: {
     flex: 1,
