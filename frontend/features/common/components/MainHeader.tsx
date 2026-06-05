@@ -56,7 +56,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
 
   return (
     <LinearGradient
-      colors={['#000000', '#374151']}
+      colors={['#0b1120', '#101827']}
       style={styles.container}
     >
       <GlobalModal
@@ -70,18 +70,23 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
       />
 
       <Appbar.Header style={styles.header}>
-        <Appbar.Content title="Men_Women_Gym" titleStyle={styles.headerTitle} />
+        <View style={styles.brandContainer}>
+          <Text style={styles.headerTitle}>Men_Women_Gym</Text>
+          <Text style={styles.headerSubtitle}>Tu espacio fitness</Text>
+        </View>
         <Pressable onPress={() => setProfileVisible(true)} style={styles.avatarContainer}>
           <Avatar.Text
-            size={40}
+            size={44}
             label={profileName.charAt(0).toUpperCase()}
+            style={styles.avatar}
+            labelStyle={styles.avatarLabel}
           />
         </Pressable>
       </Appbar.Header>
 
       <View style={styles.section}>
         <Text style={styles.title}>Hola, {profileName}</Text>
-        <Text style={styles.subtitle}>Listo para tu entrenamiento de hoy</Text>
+        <Text style={styles.subtitle}>Prepárate para superar tu marca de hoy</Text>
       </View>
 
       <Portal>
@@ -91,34 +96,42 @@ const MainHeader: React.FC<MainHeaderProps> = ({ userName }) => {
           contentContainerStyle={styles.profileDrawer}
         >
           <View style={styles.profileContent}>
+            <Text style={styles.profileTitle}>Perfil</Text>
+            <Text style={styles.profileSubtitle}>Gestiona tu cuenta y mantén tus datos actualizados.</Text>
+
             <Avatar.Text
-              size={70}
-                label={profileName.charAt(0).toUpperCase()}
+              size={72}
+              label={profileName.charAt(0).toUpperCase()}
+              style={styles.profileAvatar}
+              labelStyle={styles.profileAvatarLabel}
             />
 
             <Text style={styles.profileName}>{profileName}</Text>
 
             <Button
               mode="contained"
+              buttonColor="#38bdf8"
+              textColor="#0f172a"
               style={styles.profileButton}
               onPress={() => {
                 setProfileVisible(false);
                 setProfileFormVisible(true);
               }}
             >
-              Perfil
+              Editar perfil
             </Button>
 
             <Button
-              mode="contained"
+              mode="outlined"
               icon="logout"
+              textColor="#94a3b8"
               style={styles.logoutButton}
               onPress={() => {
                 setProfileVisible(false);
                 setModalVisible(true);
               }}
             >
-              Logout
+              Cerrar sesión
             </Button>
           </View>
         </Modal>
@@ -138,74 +151,117 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   header: {
-    backgroundColor: '#000000',
-    elevation: 5,
-    
+    backgroundColor: 'transparent',
+    elevation: 0,
+    paddingTop: 16,
+    paddingBottom: 8,
+    paddingHorizontal: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  brandContainer: {
+    flexDirection: 'column',
   },
   headerTitle: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 18,
+    color: '#f8fafc',
+    fontWeight: '900',
+    fontSize: 20,
+  },
+  headerSubtitle: {
+    color: '#94a3b8',
+    fontSize: 12,
+    marginTop: 4,
   },
   avatarContainer: {
-    marginRight: 12,
+    borderRadius: 999,
+    overflow: 'hidden',
+    backgroundColor: '#1f2937',
+    padding: 2,
+  },
+  avatar: {
+    backgroundColor: '#38bdf8',
+  },
+  avatarLabel: {
+    color: '#0f172a',
+    fontWeight: '800',
   },
   section: {
-    marginTop: 10,
+    marginTop: 18,
     marginHorizontal: 20,
     alignItems: 'center',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontSize: 26,
+    fontWeight: '900',
+    color: '#ffffff',
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
-    marginBottom: 10,
-    color: '#FFFFFF',
+    fontSize: 15,
+    marginTop: 8,
+    color: '#cbd5e1',
     textAlign: 'center',
-    opacity: 0.9,
+    lineHeight: 22,
   },
   profileDrawer: {
     position: 'absolute',
     right: 0,
     top: 0,
     bottom: 0,
-    width: 280,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    padding: 20,
+    width: 300,
+    backgroundColor: '#111827',
+    padding: 24,
     justifyContent: 'center',
-    borderTopLeftRadius: 20,
-    borderBottomLeftRadius: 20,
-    elevation: 10,
+    borderTopLeftRadius: 24,
+    borderBottomLeftRadius: 24,
+    elevation: 12,
     shadowColor: '#000',
-    shadowOffset: { width: -2, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+    shadowOffset: { width: -4, height: 0 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
   },
   profileContent: {
     alignItems: 'center',
   },
+  profileTitle: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#ffffff',
+    marginBottom: 6,
+  },
+  profileSubtitle: {
+    fontSize: 13,
+    color: '#94a3b8',
+    textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 18,
+  },
+  profileAvatar: {
+    backgroundColor: '#38bdf8',
+    marginBottom: 18,
+  },
+  profileAvatarLabel: {
+    color: '#0f172a',
+    fontWeight: '800',
+  },
   profileName: {
-    marginTop: 15,
-    fontWeight: 'bold',
-    fontSize: 20,
-    color: '#323435ff',
+    marginBottom: 18,
+    fontWeight: '900',
+    fontSize: 22,
+    color: '#f8fafc',
     textAlign: 'center',
   },
   profileButton: {
-    marginTop: 25,
-    backgroundColor: '#5d6569ff',
-    borderRadius: 25,
-    width: '80%',
+    marginTop: 8,
+    borderRadius: 28,
+    width: '85%',
   },
   logoutButton: {
-    marginTop: 15,
-    backgroundColor: '#ddd8d8ff',
-    borderRadius: 25,
-    width: '80%',
+    marginTop: 14,
+    borderColor: '#475569',
+    borderWidth: 1,
+    borderRadius: 28,
+    width: '85%',
   },
 });
 

@@ -41,74 +41,81 @@ const HomeScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#000000', '#374151']}
+      colors={['#0b1120', '#101827']}
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* CONTROLES SUPERIORES */}
-        <View style={{ marginBottom: 10, alignItems: 'center' }}>
+        <MainHeader userName={userProfile?.name} />
+
+        <View style={styles.heroCard}>
+          <Text variant="headlineSmall" style={styles.heroTitle}>
+            ¡Hola{userProfile?.name ? `, ${userProfile.name}` : '!'} 👋
+          </Text>
+          <Text style={styles.heroSubtitle}>
+            Mantén el ritmo con tu rutina y supera tu mejor versión cada día.
+          </Text>
+          <Button
+            mode="contained"
+            buttonColor="#38bdf8"
+            textColor="#0f172a"
+            style={styles.heroButton}
+            onPress={() => navigation.navigate('Exercises')}
+          >
+            Comenzar entrenamiento
+          </Button>
         </View>
 
-        <MainHeader
-          userName={userProfile?.name}
-        />
-
-        {/* ESTADISTICAS */}
-        <View style={styles.row}>
-          <Card style={styles.cardSmall}>
+        <View style={styles.statsGrid}>
+          <Card style={[styles.cardSmall, styles.cardAccent1]}>
             <Card.Content>
-              <Text variant="titleLarge" style={styles.statNumber}>4</Text>
+              <Text variant="displaySmall" style={styles.statNumber}>4</Text>
               <Text style={styles.statLabel}>Entrenamientos</Text>
             </Card.Content>
           </Card>
 
-          <Card style={styles.cardSmall}>
+          <Card style={[styles.cardSmall, styles.cardAccent2]}>
             <Card.Content>
-              <Text variant="titleLarge" style={styles.statNumber}>750</Text>
+              <Text variant="displaySmall" style={styles.statNumber}>750</Text>
               <Text style={styles.statLabel}>Calorías</Text>
             </Card.Content>
           </Card>
         </View>
 
-        {/* PROGRESO */}
         <View style={styles.section}>
-          <Card style={styles.card}>
-            <Card.Title title="Progreso semanal" titleStyle={styles.cardTitle} />
+          <Text style={styles.sectionTitle}>Progreso semanal</Text>
+          <Card style={styles.cardLarge}>
             <Card.Content>
               <Text style={styles.progressText}>70% completado</Text>
-              <ProgressBar progress={0.7} style={styles.progressBar} color="#9ca3af" />
+              <ProgressBar progress={0.7} style={styles.progressBar} color="#38bdf8" />
+              <View style={styles.progressRow}>
+                <Text style={styles.progressDetail}>Objetivo semanal</Text>
+                <Text style={styles.progressDetail}>4/5 sesiones</Text>
+              </View>
             </Card.Content>
           </Card>
         </View>
 
-        {/* ACCESOS RAPIDOS */}
         <View style={styles.section}>
-          <Text style={styles.subtitle}>Accesos rápidos</Text>
-
-          <View style={styles.row}>
-            <Card
-              style={styles.cardMenu}
-              onPress={() => navigation.navigate('Exercises')}
-            >
+          <Text style={styles.sectionTitle}>Accesos rápidos</Text>
+          <View style={styles.menuGrid}>
+            <Card style={styles.cardMenu} onPress={() => navigation.navigate('Exercises')}>
               <Card.Content>
-                <Text style={styles.menuText}>Ejercicios</Text>
+                <Text style={styles.menuText}>🏋️‍♀️ Ejercicios</Text>
               </Card.Content>
             </Card>
-
-            <Card style={styles.cardMenu}>
+            <Card style={styles.cardMenu} onPress={() => navigation.navigate('Routines')}
+            >
               <Card.Content>
-                <Text style={styles.menuText}>Rutinas</Text>
+                <Text style={styles.menuText}>📋 Rutinas</Text>
               </Card.Content>
             </Card>
           </View>
-
-          <View style={styles.row}>
+          <View style={styles.menuGrid}>
             <Card style={styles.cardMenu}>
               <Card.Content>
                 <Text style={styles.menuText}>📈 Progreso</Text>
               </Card.Content>
             </Card>
-
             <Card style={styles.cardMenu}>
               <Card.Content>
                 <Text style={styles.menuText}>🏆 Desafíos</Text>
@@ -117,30 +124,43 @@ const HomeScreen = () => {
           </View>
         </View>
 
-        {/* PROXIMO ENTRENAMIENTO */}
         <View style={styles.section}>
-          <Card style={styles.card}>
-            <Card.Title title="Próximo entrenamiento" titleStyle={styles.cardTitle} />
+          <Text style={styles.sectionTitle}>Próximo entrenamiento</Text>
+          <Card style={styles.cardLarge}>
             <Card.Content>
-              <Text variant="titleMedium" style={styles.workoutTitle}>Pecho y Tríceps</Text>
-              <Text style={styles.workoutDetail}>Duración: 45 min</Text>
-              <Text style={styles.workoutDetail}>Hora: 6:00 PM</Text>
+              <Text variant="titleLarge" style={styles.workoutTitle}>Pecho y Tríceps</Text>
+              <View style={styles.badgeRow}>
+                <View style={styles.badge}><Text style={styles.badgeText}>45 min</Text></View>
+                <View style={styles.badge}><Text style={styles.badgeText}>6:00 PM</Text></View>
+              </View>
             </Card.Content>
-
-            <Card.Actions>
-              <Button mode="contained" style={styles.button}>Iniciar</Button>
+            <Card.Actions style={styles.actionsRow}>
+              <Button
+                mode="contained"
+                buttonColor="#0ea5e9"
+                textColor="#fff"
+                style={styles.button}
+              >
+                Iniciar
+              </Button>
+              <Button
+                mode="text"
+                textColor="#94a3b8"
+                onPress={() => navigation.navigate('Routines')}
+              >
+                Ver detalles
+              </Button>
             </Card.Actions>
           </Card>
         </View>
 
-        {/* HISTORIAL */}
         <View style={styles.section}>
-          <Card style={styles.card}>
-            <Card.Title title="Últimos entrenamientos" titleStyle={styles.cardTitle} />
+          <Text style={styles.sectionTitle}>Últimos entrenamientos</Text>
+          <Card style={styles.cardLarge}>
             <Card.Content>
-              <Text style={styles.historyText}>✔ Espalda</Text>
-              <Text style={styles.historyText}>✔ Piernas</Text>
-              <Text style={styles.historyText}>✔ Hombros</Text>
+              <View style={styles.historyItem}><Text style={styles.historyText}>🟢 Espalda</Text></View>
+              <View style={styles.historyItem}><Text style={styles.historyText}>🟣 Piernas</Text></View>
+              <View style={styles.historyItem}><Text style={styles.historyText}>🔵 Hombros</Text></View>
             </Card.Content>
           </Card>
         </View>
@@ -155,103 +175,173 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 20,
+    paddingBottom: 40,
   },
-  section: {
-    marginTop: 20,
+  heroCard: {
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+    borderRadius: 24,
+    padding: 22,
+    marginBottom: 20,
+    shadowColor: '#0f172a',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 8,
   },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    color: '#FFFFFF',
-    textAlign: 'center',
+  heroTitle: {
+    color: '#f8fafc',
+    fontWeight: '800',
+    marginBottom: 10,
   },
-  row: {
+  heroSubtitle: {
+    color: '#cbd5e1',
+    fontSize: 15,
+    lineHeight: 22,
+    marginBottom: 18,
+  },
+  heroButton: {
+    borderRadius: 999,
+    paddingVertical: 8,
+  },
+  statsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 15,
   },
-  card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 15,
-    elevation: 5,
+  section: {
+    marginTop: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#f8fafc',
+    marginBottom: 14,
+  },
+  cardLarge: {
+    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+    borderRadius: 22,
+    elevation: 6,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
   },
   cardSmall: {
     width: '48%',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 15,
-    elevation: 5,
+    borderRadius: 22,
+    paddingVertical: 22,
+    paddingHorizontal: 18,
+    elevation: 6,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 14,
   },
-  cardMenu: {
-    width: '48%',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 15,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    marginBottom: 15,
+  cardAccent1: {
+    backgroundColor: '#0f172a',
+    borderWidth: 1,
+    borderColor: '#38bdf8',
+  },
+  cardAccent2: {
+    backgroundColor: '#0f172a',
+    borderWidth: 1,
+    borderColor: '#7c3aed',
   },
   statNumber: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#707783ff',
+    fontSize: 36,
+    fontWeight: '900',
+    color: '#f8fafc',
     textAlign: 'center',
   },
   statLabel: {
-    fontSize: 14,
-    color: '#798494ff',
+    fontSize: 13,
+    color: '#94a3b8',
     textAlign: 'center',
-    marginTop: 5,
-  },
-  cardTitle: {
-    color: '#6f7786ff',
-    fontWeight: 'bold',
-    fontSize: 18,
+    marginTop: 8,
   },
   progressText: {
-    fontSize: 16,
-    color: '#5a616eff',
-    textAlign: 'center',
+    fontSize: 15,
+    color: '#e2e8f0',
+    marginBottom: 14,
   },
   progressBar: {
-    marginTop: 10,
-    height: 8,
-    borderRadius: 4,
+    height: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(148, 163, 184, 0.18)',
+  },
+  progressRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 14,
+  },
+  progressDetail: {
+    color: '#cbd5e1',
+    fontSize: 13,
+  },
+  menuGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  cardMenu: {
+    width: '48%',
+    backgroundColor: '#111827',
+    borderRadius: 22,
+    paddingVertical: 24,
+    paddingHorizontal: 14,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 14,
   },
   menuText: {
     fontSize: 16,
-    color: '#374151',
+    color: '#e2e8f0',
     textAlign: 'center',
-    fontWeight: '500',
+    fontWeight: '700',
   },
   workoutTitle: {
-    color: '#606672ff',
-    fontWeight: 'bold',
-    fontSize: 18,
+    color: '#f8fafc',
+    fontWeight: '800',
+    fontSize: 20,
+    marginBottom: 12,
   },
-  workoutDetail: {
-    fontSize: 14,
-    color: '#9ca3af',
-    marginTop: 5,
+  badgeRow: {
+    flexDirection: 'row',
+  },
+  badge: {
+    backgroundColor: '#0f172a',
+    borderRadius: 999,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    marginRight: 10,
+  },
+  badgeText: {
+    color: '#bfdbfe',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  actionsRow: {
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   button: {
-    backgroundColor: '#6b7280',
-    borderRadius: 25,
+    borderRadius: 999,
+  },
+  historyItem: {
+    backgroundColor: '#111827',
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginBottom: 10,
   },
   historyText: {
-    fontSize: 16,
-    color: '#51565fff',
-    marginBottom: 5,
+    fontSize: 15,
+    color: '#e2e8f0',
+    fontWeight: '600',
   },
 });
 
