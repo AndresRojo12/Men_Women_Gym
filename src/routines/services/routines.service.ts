@@ -26,7 +26,7 @@ export class RoutinesService {
 
   // traer rutinas del cliente logueado
   async findMyRoutines(userId: number) {
-    const routine = await this.routinesRepository.findOne({
+    const routines = await this.routinesRepository.find({
       where: {
         customer: { 
           user: { id: userId },
@@ -35,19 +35,20 @@ export class RoutinesService {
       relations: ['customer', 'routineExercises', 'routineExercises.exercise'],
     });
 
-    if (routine?.routineExercises) {
-      routine.routineExercises = routine.routineExercises.map((routineExercise) => ({
-        ...routineExercise,
-        exercise: {
-          ...routineExercise.exercise,
-          image: routineExercise.exercise.image
-            ? buildImageUrl('exercises', routineExercise.exercise.image)
-            : routineExercise.exercise.image,
-        },
-      }));
-    }
-
-    return routine;
+    return routines.map((routine) => {
+      if (routine.routineExercises) {
+        routine.routineExercises = routine.routineExercises.map((routineExercise) => ({
+          ...routineExercise,
+          exercise: {
+            ...routineExercise.exercise,
+            image: routineExercise.exercise.image
+              ? buildImageUrl('exercises', routineExercise.exercise.image)
+              : routineExercise.exercise.image,
+          },
+        }));
+      }
+      return routine;
+    });
   }
 
   async create( userId: number, data: CreateRoutineDto) {

@@ -15,6 +15,31 @@ import {
 import React, { useState, useEffect } from 'react';
 import { api } from '../../auth/services/api';
 
+interface RoutineExercise {
+  id: number;
+  sets: number;
+  reps: number;
+  restTime: number | null;
+  weight: number | null;
+  createdAt: string;
+  exercise: {
+    id: number;
+    name: string;
+    description: string;
+    level: string;
+    image: string;
+  };
+}
+
+interface Routine {
+  id: number;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  routineExercises: RoutineExercise[];
+}
+
 interface UserProfile {
   id: number;
   name: string;
@@ -25,6 +50,7 @@ const HomeScreen = () => {
   const navigation = useNavigation<HomeNavProp>();
 
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userRoutines, setUserRoutines] = useState<Routine[]>([]);
 
   const fetchUserProfile = async () => {
     try {
@@ -35,8 +61,68 @@ const HomeScreen = () => {
     }
   };
 
+  const fetchUserRoutines = async () => {
+    try {
+      const response = await api.get<Routine[]>('/routines/me');
+      setUserRoutines(response.data || []);
+    } catch (err) {
+      console.error('Error fetching user routines:', err);
+    }
+  };
+
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+
+  const totalSessions = userRoutines.length;
+  const totalExercises = userRoutines.reduce(
+    (sum, routine) => sum + (routine.routineExercises?.length ?? 0),
+    0,
+  );
+
+  const weeklyTrainingCount = userRoutines.reduce((sum, routine) => {
+    return (
+      sum +
+      (routine.routineExercises?.filter((exercise) => {
+        return new Date(exercise.createdAt) >= weekAgo;
+      }).length ?? 0)
+    );
+  }, 0);
+
+  const weeklyTarget = 5;
+  const weeklyProgress = Math.min(weeklyTrainingCount / weeklyTarget, 1);
+  const weeklyProgressLabel = `${weeklyTrainingCount}/${weeklyTarget} sesiones`;
+
+  const totalVolume = userRoutines.reduce(
+    (sum, routine) =>
+      sum +
+      (routine.routineExercises?.reduce(
+        (exerciseSum, exercise) => exerciseSum + exercise.sets * exercise.reps,
+        0,
+      ) ?? 0),
+    0,
+  );
+  const estimatedCalories = totalVolume * 4;
+
+  const lastTrainings = userRoutines
+    .flatMap((routine) =>
+      (routine.routineExercises ?? []).map((exercise) => ({
+        ...exercise,
+        routineName: routine.name,
+      })),
+    )
+    .sort(
+      (a, b) => Number(new Date(b.createdAt)) - Number(new Date(a.createdAt)),
+    )
+    .slice(0, 3);
+
+  const upcomingRoutine = [...userRoutines]
+    .sort(
+      (a, b) => Number(new Date(b.updatedAt)) - Number(new Date(a.updatedAt)),
+    )[0];
+
   useEffect(() => {
     fetchUserProfile();
+    fetchUserRoutines();
   }, []);
 
   return (
@@ -68,15 +154,15 @@ const HomeScreen = () => {
         <View style={styles.statsGrid}>
           <Card style={[styles.cardSmall, styles.cardAccent1]}>
             <Card.Content>
-              <Text variant="displaySmall" style={styles.statNumber}>4</Text>
+              <Text variant="displaySmall" style={styles.statNumber}>{totalSessions}</Text>
               <Text style={styles.statLabel}>Entrenamientos</Text>
             </Card.Content>
           </Card>
 
           <Card style={[styles.cardSmall, styles.cardAccent2]}>
             <Card.Content>
-              <Text variant="displaySmall" style={styles.statNumber}>750</Text>
-              <Text style={styles.statLabel}>Calorías</Text>
+              <Text variant="displaySmall" style={styles.statNumber}>{estimatedCalories}</Text>
+              <Text style={styles.statLabel}>Calorías estimadas</Text>
             </Card.Content>
           </Card>
         </View>
@@ -85,11 +171,11 @@ const HomeScreen = () => {
           <Text style={styles.sectionTitle}>Progreso semanal</Text>
           <Card style={styles.cardLarge}>
             <Card.Content>
-              <Text style={styles.progressText}>70% completado</Text>
-              <ProgressBar progress={0.7} style={styles.progressBar} color="#38bdf8" />
+              <Text style={styles.progressText}>{Math.round(weeklyProgress * 100)}% completado</Text>
+              <ProgressBar progress={weeklyProgress} style={styles.progressBar} color="#38bdf8" />
               <View style={styles.progressRow}>
                 <Text style={styles.progressDetail}>Objetivo semanal</Text>
-                <Text style={styles.progressDetail}>4/5 sesiones</Text>
+                <Text style={styles.progressDetail}>{weeklyProgressLabel}</Text>
               </View>
             </Card.Content>
           </Card>
@@ -128,10 +214,20 @@ const HomeScreen = () => {
           <Text style={styles.sectionTitle}>Próximo entrenamiento</Text>
           <Card style={styles.cardLarge}>
             <Card.Content>
-              <Text variant="titleLarge" style={styles.workoutTitle}>Pecho y Tríceps</Text>
+              <Text variant="titleLarge" style={styles.workoutTitle}>
+                {upcomingRoutine?.name ?? 'Sin entrenamientos programados'}
+              </Text>
               <View style={styles.badgeRow}>
-                <View style={styles.badge}><Text style={styles.badgeText}>45 min</Text></View>
-                <View style={styles.badge}><Text style={styles.badgeText}>6:00 PM</Text></View>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>
+                    {upcomingRoutine ? `${upcomingRoutine.routineExercises?.length ?? 0} ejercicios` : '---'}
+                  </Text>
+                </View>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>
+                    {upcomingRoutine ? 'Última actualización' : ''}
+                  </Text>
+                </View>
               </View>
             </Card.Content>
             <Card.Actions style={styles.actionsRow}>
@@ -140,8 +236,9 @@ const HomeScreen = () => {
                 buttonColor="#0ea5e9"
                 textColor="#fff"
                 style={styles.button}
+                onPress={() => navigation.navigate('Routines')}
               >
-                Iniciar
+                {upcomingRoutine ? 'Ver rutina' : 'Crear rutina'}
               </Button>
               <Button
                 mode="text"
@@ -158,9 +255,20 @@ const HomeScreen = () => {
           <Text style={styles.sectionTitle}>Últimos entrenamientos</Text>
           <Card style={styles.cardLarge}>
             <Card.Content>
-              <View style={styles.historyItem}><Text style={styles.historyText}>🟢 Espalda</Text></View>
-              <View style={styles.historyItem}><Text style={styles.historyText}>🟣 Piernas</Text></View>
-              <View style={styles.historyItem}><Text style={styles.historyText}>🔵 Hombros</Text></View>
+              {lastTrainings.length > 0 ? (
+                lastTrainings.map((training) => (
+                  <View style={styles.historyItem} key={training.id}>
+                    <Text style={styles.historyText}>
+                      • {training.exercise.name} en {training.routineName}
+                    </Text>
+                    <Text style={styles.historySubtext}>
+                      {new Date(training.createdAt).toLocaleDateString()}
+                    </Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={styles.historyText}>Aún no hay entrenamientos recientes.</Text>
+              )}
             </Card.Content>
           </Card>
         </View>
@@ -342,6 +450,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#e2e8f0',
     fontWeight: '600',
+  },
+  historySubtext: {
+    fontSize: 12,
+    color: '#94a3b8',
+    marginTop: 6,
   },
 });
 
