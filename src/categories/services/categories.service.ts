@@ -17,7 +17,11 @@ export class CategoriesService {
   ) {}
 
   async findAll() {
-    const categories = await this.categoriesRepository.find();
+    const categories = await this.categoriesRepository.find({
+      order: {
+        name: 'ASC',
+      }
+    });
     return categories.map((category) => ({
       ...category,
       image: buildImageUrl('categories', category.image),
