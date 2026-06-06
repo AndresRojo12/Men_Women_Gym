@@ -16,6 +16,9 @@ import AdminDashboard from './features/auth/screens/AdminScreen';
 import CategoriesScreen from './features/categories/screens/GetCategories';
 // screen exercises
 import ExercisesScreen from './features/exercises/screens/GetExercises';
+import RoutinesScreen from './features/routines/screens/RoutinesScreen';
+import CreateRoutineScreen from './features/routines/screens/CreateRoutineScreen';
+import RoutineDetailScreen from './features/routines/screens/RoutineDetailScreen';
 
 import '@/global.css';
 
@@ -60,6 +63,9 @@ export default function App() {
               <>
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="Exercises" component={ExercisesScreen} />
+              <Stack.Screen name="Routines" component={RoutinesScreen} />
+              <Stack.Screen name="CreateRoutine" component={CreateRoutineScreen} />
+              <Stack.Screen name="RoutineDetail" component={RoutineDetailScreen} />
               </>
             )
           ) : (

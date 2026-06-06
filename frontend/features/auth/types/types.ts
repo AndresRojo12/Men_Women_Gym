@@ -44,4 +44,8 @@ export type AuthStackParamList = {
   Home: undefined;
   Categories: undefined;
   Exercises: undefined;
+  Routines: undefined;
+  CreateRoutine: undefined;
+  RoutineDetail: { routineId: number };
+  AdminDashboard: undefined;
 };

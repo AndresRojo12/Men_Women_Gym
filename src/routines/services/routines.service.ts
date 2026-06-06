@@ -8,6 +8,7 @@ import { Customer } from 'src/users/entities/customer.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateRoutineDto, UpdateRoutineDto } from '../dtos/Routine.dto';
+import { buildImageUrl } from '../../common/helpers/image.url.helper';
 import { use } from 'passport';
 
 @Injectable()
@@ -25,15 +26,28 @@ export class RoutinesService {
 
   // traer rutinas del cliente logueado
   async findMyRoutines(userId: number) {
-    return await this.routinesRepository.findOne({
+    const routine = await this.routinesRepository.findOne({
       where: {
         customer: { 
           user: { id: userId },
          },
       },
-      relations: ['customer', 'routineExercises', 'routineExercises.exercise'
-      ],
-    })
+      relations: ['customer', 'routineExercises', 'routineExercises.exercise'],
+    });
+
+    if (routine?.routineExercises) {
+      routine.routineExercises = routine.routineExercises.map((routineExercise) => ({
+        ...routineExercise,
+        exercise: {
+          ...routineExercise.exercise,
+          image: routineExercise.exercise.image
+            ? buildImageUrl('exercises', routineExercise.exercise.image)
+            : routineExercise.exercise.image,
+        },
+      }));
+    }
+
+    return routine;
   }
 
   async create( userId: number, data: CreateRoutineDto) {
@@ -59,10 +73,26 @@ export class RoutinesService {
   }
 
   async findOne(id: number) {
-    const routine = await this.routinesRepository.findOneBy({ id });
+    const routine = await this.routinesRepository.findOne({
+      where: { id },
+      relations: ['customer', 'routineExercises', 'routineExercises.exercise'],
+    });
     if (!routine) {
       throw new NotFoundException(`Routine with id ${id} not found`);
     }
+
+    if (routine.routineExercises) {
+      routine.routineExercises = routine.routineExercises.map((routineExercise) => ({
+        ...routineExercise,
+        exercise: {
+          ...routineExercise.exercise,
+          image: routineExercise.exercise.image
+            ? buildImageUrl('exercises', routineExercise.exercise.image)
+            : routineExercise.exercise.image,
+        },
+      }));
+    }
+
     return routine;
   }
 
