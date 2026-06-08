@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -9,6 +9,9 @@ import {
   Button,
   Card,
   ProgressBar,
+  Portal,
+  Modal,
+  TextInput,
 } from 'react-native-paper';
 
 // import traer perfil de usuario para mostrar en el header, por ahora es estático
@@ -51,6 +54,11 @@ const HomeScreen = () => {
 
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [userRoutines, setUserRoutines] = useState<Routine[]>([]);
+  const [isChatVisible, setIsChatVisible] = useState(false);
+  const [chatInput, setChatInput] = useState('');
+  const [chatMessages, setChatMessages] = useState<string[]>([
+    'Hola, soy tu asistente de entrenamiento. ¿En qué puedo ayudarte?',
+  ]);
 
   const fetchUserProfile = async () => {
     try {
@@ -124,6 +132,30 @@ const HomeScreen = () => {
     fetchUserProfile();
     fetchUserRoutines();
   }, []);
+
+  const handleOpenChat = () => {
+    setIsChatVisible(true);
+  };
+
+  const handleCloseChat = () => {
+    setIsChatVisible(false);
+  };
+
+  const handleSendMessage = () => {
+    if (!chatInput.trim()) {
+      return;
+    }
+
+    setChatMessages((current) => [...current, `Tú: ${chatInput.trim()}`]);
+    setChatInput('');
+
+    setTimeout(() => {
+      setChatMessages((current) => [
+        ...current,
+        'IA: ¡Genial! Puedo ayudarte a planificar tu próxima rutina, sugerir ejercicios o responder dudas.',
+      ]);
+    }, 500);
+  };
 
   return (
     <LinearGradient
@@ -273,6 +305,50 @@ const HomeScreen = () => {
           </Card>
         </View>
       </ScrollView>
+      <TouchableOpacity
+        style={styles.agentButton}
+        activeOpacity={0.85}
+        onPress={handleOpenChat}
+      >
+        <Image
+          source={require('../../../assets/gym.png')}
+          style={styles.agentIcon}
+        />
+      </TouchableOpacity>
+
+      <Portal>
+        <Modal
+          visible={isChatVisible}
+          onDismiss={handleCloseChat}
+          contentContainerStyle={styles.chatModal}
+        >
+          <Text style={styles.chatTitle}>Asistente de IA</Text>
+          <View style={styles.chatBody}>
+            {chatMessages.map((message, index) => (
+              <Text key={`${message}-${index}`} style={styles.chatMessage}>
+                {message}
+              </Text>
+            ))}
+          </View>
+          <TextInput
+            mode="outlined"
+            placeholder="Escribe tu mensaje..."
+            value={chatInput}
+            onChangeText={setChatInput}
+            style={styles.chatInput}
+            right={<TextInput.Icon icon="send" onPress={handleSendMessage} />}
+          />
+          <Button
+            mode="contained"
+            buttonColor="#2563eb"
+            textColor="#fff"
+            style={styles.chatButton}
+            onPress={handleSendMessage}
+          >
+            Enviar
+          </Button>
+        </Modal>
+      </Portal>
     </LinearGradient>
   );
 };
@@ -455,6 +531,58 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#94a3b8',
     marginTop: 6,
+  },
+  agentButton: {
+    position: 'absolute',
+    right: 28,
+    bottom: 28,
+    width: 58,
+    height: 58,
+    borderRadius: 16,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+  },
+  chatModal: {
+    backgroundColor: '#0f172a',
+    padding: 16,
+    borderRadius: 24,
+    width: 300,
+    height: 300,
+    alignSelf: 'center',
+    justifyContent: 'space-between',
+  },
+  chatTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#f8fafc',
+    marginBottom: 12,
+  },
+  chatBody: {
+    marginBottom: 16,
+    maxHeight: 260,
+  },
+  chatMessage: {
+    color: '#e2e8f0',
+    marginBottom: 10,
+    lineHeight: 20,
+  },
+  chatInput: {
+    marginBottom: 12,
+    backgroundColor: '#111827',
+  },
+  chatButton: {
+    borderRadius: 999,
+  },
+  agentIcon: {
+    width: 28,
+    height: 28,
+    resizeMode: 'contain',
   },
 });
 
