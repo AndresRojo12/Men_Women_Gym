@@ -149,6 +149,14 @@ const RoutinesScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.headerRow}>
+        <Button
+          mode="text"
+          textColor="#38bdf8"
+          onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Home' }] })}
+          style={styles.backLink}
+        >
+          Volver
+        </Button>
         <Text variant="headlineSmall" style={styles.title}>
           Mis rutinas
         </Text>
@@ -171,6 +179,7 @@ const RoutinesScreen = () => {
 
       {!loading && routines.length > 0 && (
         <FlatList
+          numColumns={4}
           data={routines}
           keyExtractor={(item) => String(item.id)}
           contentContainerStyle={styles.routineList}
@@ -382,10 +391,16 @@ const styles = StyleSheet.create({
     margin: 4,
     overflow: 'hidden',
   },
+  backLink: {
+    marginRight: 16,
+  },
   card: {
     backgroundColor: '#111827',
     borderRadius: 20,
     paddingVertical: 8,
+    marginBottom: 16,
+    margin:50
+
   },
   cardTitle: {
     color: '#f8fafc',

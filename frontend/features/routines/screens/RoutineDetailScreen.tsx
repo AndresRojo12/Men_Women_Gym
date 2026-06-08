@@ -51,6 +51,12 @@ const RoutineDetailScreen = ({ route, navigation }: Props) => {
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [workoutActive, setWorkoutActive] = useState(false);
+  const [workoutElapsed, setWorkoutElapsed] = useState(0);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
+  const [currentSet, setCurrentSet] = useState(1);
+  const [isResting, setIsResting] = useState(false);
+  const [restRemaining, setRestRemaining] = useState<number | null>(null);
   const routineId = route.params.routineId;
 
   useEffect(() => {
@@ -82,6 +88,89 @@ const RoutineDetailScreen = ({ route, navigation }: Props) => {
   }, [routineId]);
 
   const selectedExercises = availableExercises.filter((exercise) => selectedExerciseIds.includes(exercise.id));
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
+
+  const stopWorkout = () => {
+    setWorkoutActive(false);
+    setRestRemaining(null);
+    setIsResting(false);
+    setCurrentExerciseIndex(0);
+    setCurrentSet(1);
+    setWorkoutElapsed(0);
+  };
+
+  const startWorkout = () => {
+    setWorkoutActive(true);
+    setWorkoutElapsed(0);
+    setCurrentExerciseIndex(0);
+    setCurrentSet(1);
+    setIsResting(false);
+    setRestRemaining(null);
+  };
+
+  const advanceAfterRest = () => {
+    const exercise = routineExercises[currentExerciseIndex];
+    const nextSet = currentSet + 1;
+
+    if (nextSet <= exercise.sets) {
+      setCurrentSet(nextSet);
+      setIsResting(false);
+      setRestRemaining(null);
+      return;
+    }
+
+    if (currentExerciseIndex < routineExercises.length - 1) {
+      setCurrentExerciseIndex((current) => current + 1);
+      setCurrentSet(1);
+      setIsResting(false);
+      setRestRemaining(null);
+      return;
+    }
+
+    stopWorkout();
+  };
+
+  const startRest = () => {
+    const exercise = routineExercises[currentExerciseIndex];
+    const rest = exercise.restTime ?? 60;
+    setIsResting(true);
+    setRestRemaining(rest);
+  };
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setInterval> | null = null;
+    if (workoutActive) {
+      timer = setInterval(() => {
+        setWorkoutElapsed((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [workoutActive]);
+
+  useEffect(() => {
+    let restTimer: ReturnType<typeof setInterval> | null = null;
+    if (isResting && restRemaining !== null && restRemaining > 0) {
+      restTimer = setInterval(() => {
+        setRestRemaining((prev) => (prev !== null ? prev - 1 : null));
+      }, 1000);
+    }
+    return () => {
+      if (restTimer) clearInterval(restTimer);
+    };
+  }, [isResting, restRemaining]);
+
+  useEffect(() => {
+    if (isResting && restRemaining === 0) {
+      advanceAfterRest();
+    }
+  }, [restRemaining, isResting]);
 
   const addExerciseToRoutine = async () => {
     if (!selectedExerciseIds.length) {
@@ -169,17 +258,59 @@ const RoutineDetailScreen = ({ route, navigation }: Props) => {
       </View>
 
       <Text style={styles.subtitle}>{routine.description}</Text>
-      <Button
-        mode={addingExercise ? 'outlined' : 'contained'}
-        onPress={() => {
-          setAddingExercise((current) => !current);
-          setActionMessage(null);
-          setError(null);
-        }}
-        style={styles.addButton}
-      >
-        {addingExercise ? 'Cancelar agregar ejercicio' : 'Agregar ejercicio'}
-      </Button>
+      <Card style={styles.workoutCard}>
+        <Card.Content>
+          <Text style={styles.label}>Entrenamiento</Text>
+          <Text style={styles.infoText}>
+            {workoutActive ? 'Entrenamiento en curso' : 'Comienza tu rutina para iniciar el cronómetro'}
+          </Text>
+          <View style={styles.workoutMetrics}>
+            <Text style={styles.metricLabel}>Tiempo total entrenado</Text>
+            <Text style={styles.metricValue}>{formatTime(workoutElapsed)}</Text>
+          </View>
+          {workoutActive && (
+            <View style={styles.workoutMetrics}>
+              <Text style={styles.metricLabel}>Ejercicio actual</Text>
+              <Text style={styles.metricValue}>
+                {routineExercises[currentExerciseIndex]?.exercise.name ?? 'Finalizado'}
+              </Text>
+            </View>
+          )}
+          {isResting && restRemaining !== null ? (
+            <Text style={styles.restText}>Descanso: {restRemaining}s</Text>
+          ) : workoutActive ? (
+            <Text style={styles.restText}>
+              Serie {currentSet} / {routineExercises[currentExerciseIndex]?.sets ?? 0}
+            </Text>
+          ) : null}
+<View style={styles.actionButtonsRow}>
+            <Button
+              mode={workoutActive ? 'outlined' : 'contained'}
+              compact
+              onPress={workoutActive ? stopWorkout : startWorkout}
+              style={styles.actionButton}
+              contentStyle={styles.actionButtonContent}
+              labelStyle={styles.actionButtonLabel}
+            >
+              {workoutActive ? 'Terminar entrenamiento' : 'Comenzar entrenamiento'}
+            </Button>
+            <Button
+              mode={addingExercise ? 'outlined' : 'contained'}
+              compact
+              onPress={() => {
+                setAddingExercise((current) => !current);
+                setActionMessage(null);
+                setError(null);
+              }}
+              style={[styles.actionButton, styles.addExerciseButton]}
+              contentStyle={styles.actionButtonContent}
+              labelStyle={styles.actionButtonLabel}
+            >
+              {addingExercise ? 'Cancelar' : 'Agregar ejercicio'}
+            </Button>
+          </View>
+        </Card.Content>
+      </Card>
 
       {addingExercise && (
         <Card style={styles.cardSection}>
@@ -299,25 +430,53 @@ const RoutineDetailScreen = ({ route, navigation }: Props) => {
           numColumns={4}
           columnWrapperStyle={styles.columnWrapper}
           contentContainerStyle={styles.exerciseList}
-          renderItem={({ item }) => (
-            <Card style={styles.exerciseCard}>
-              <Image
-                source={{ uri: buildExerciseImageUri(item.exercise.image) }}
-                style={styles.exerciseImage}
-                resizeMode="cover"
-              />
-              <Card.Content>
-                <Text style={styles.exerciseTitle}>{item.exercise.name}</Text>
-                <Text style={styles.exerciseSubtitle}>{item.exercise.level}</Text>
-                <Text style={styles.exerciseText}>
-                  {item.sets} series x {item.reps} repeticiones
-                </Text>
-                <Text style={styles.exerciseText}>
-                  Descanso: {item.restTime ?? 0}s • Peso: {item.weight ?? 0}kg
-                </Text>
-              </Card.Content>
-            </Card>
-          )}
+          renderItem={({ item, index }) => {
+            const isCurrentExercise = workoutActive && index === currentExerciseIndex;
+            const isCompletedExercise = workoutActive && index < currentExerciseIndex;
+
+            return (
+              <Card style={styles.exerciseCard}>
+                <Image
+                  source={{ uri: buildExerciseImageUri(item.exercise.image) }}
+                  style={styles.exerciseImage}
+                  resizeMode="cover"
+                />
+                <Card.Content>
+                  <Text style={styles.exerciseTitle}>{item.exercise.name}</Text>
+                  <Text style={styles.exerciseSubtitle}>{item.exercise.level}</Text>
+                  <Text style={styles.exerciseText}>
+                    {item.sets} series x {item.reps} repeticiones
+                  </Text>
+                  <Text style={styles.exerciseText}>
+                    Descanso: {item.restTime ?? 0}s • Peso: {item.weight ?? 0}kg
+                  </Text>
+                  {isCompletedExercise && (
+                    <Text style={styles.completedText}>Ejercicio completado</Text>
+                  )}
+                  {isCurrentExercise && !isResting && workoutActive && (
+                    <View style={styles.exerciseStatusRow}>
+                      <Text style={styles.exerciseStatusText}>
+                        Serie actual {currentSet} / {item.sets}
+                      </Text>
+                      <Button
+                        mode="contained"
+                        compact
+                        onPress={startRest}
+                        style={styles.exerciseActionButton}
+                      >
+                        Terminé serie
+                      </Button>
+                    </View>
+                  )}
+                  {isCurrentExercise && isResting && (
+                    <Text style={styles.restTimerText}>
+                      Descanso: {restRemaining ?? 0}s
+                    </Text>
+                  )}
+                </Card.Content>
+              </Card>
+            );
+          }}
         />
       )}
     </ScrollView>
@@ -436,6 +595,29 @@ const styles = StyleSheet.create({
   },
   fieldGroup: {
     flex: 1,
+  },
+  actionButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 16,
+  },
+  actionButton: {
+    flex: 1,
+    borderRadius: 16,
+    minHeight: 38,
+  },
+  actionButtonContent: {
+    height: 38,
+    paddingHorizontal: 14,
+  },
+  actionButtonLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  addExerciseButton: {
+    borderColor: '#38bdf8',
+    marginLeft: 10,
   },
   smallInput: {
     backgroundColor: '#0f172a',

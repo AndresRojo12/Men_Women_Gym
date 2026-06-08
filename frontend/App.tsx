@@ -22,6 +22,25 @@ import RoutineDetailScreen from './features/routines/screens/RoutineDetailScreen
 
 import '@/global.css';
 
+const prefixes = typeof window !== 'undefined' && window.location?.origin ? [window.location.origin] : [];
+
+const linking = {
+  prefixes,
+  config: {
+    screens: {
+      Login: 'login',
+      Register: 'register',
+      Home: '',
+      Categories: 'categories',
+      Exercises: 'exercises',
+      Routines: 'routines',
+      CreateRoutine: 'routines/create',
+      RoutineDetail: 'routines/:routineId',
+      AdminDashboard: 'admin',
+    },
+  },
+};
+
 const setting = {
   icon: (props: any) => <MaterialCommunityIcons {...props} />,
 };
@@ -54,7 +73,7 @@ export default function App() {
 
   return (
     <PaperProvider settings={setting}>
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {isAuthenticated ? (
             user?.role === 'admin' ? (
