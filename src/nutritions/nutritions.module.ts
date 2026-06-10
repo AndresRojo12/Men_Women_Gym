@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { NutritionsService } from './services/nutritions.service';
-import { NutritionsController } from './controllers/nutritions/nutritions.controller';
+import { NutritionsController } from './controllers/nutritions.controller';
 
 @Module({
   providers: [NutritionsService],
