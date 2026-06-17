@@ -205,6 +205,16 @@ const AdminDashboard = () => {
             >
               <Text style={styles.createGridButtonText}>Crear categoría</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.createGridButton}
+              onPress={() => {
+                setSelectedCategory(null);
+                setFile(null);
+                setVisible(true);
+              }}
+            >
+              <Text style={styles.createGridButtonText}>Crear ejercicio</Text>
+            </TouchableOpacity>
           </View>
           <FlatList
             data={categories}
