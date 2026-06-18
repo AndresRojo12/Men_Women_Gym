@@ -15,36 +15,36 @@ import { RoutineExercise } from '../../routine_exercises/entities/Routine_Exerci
 @Entity()
 export class Exercise {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Column({ unique: true })
-  name: string;
+  name?: string;
 
   @Column()
-  description: string;
+  description?: string;
 
   @Column()
-  level: string;
+  level?: string;
 
   @Column()
-  image: string;
+  image?: string;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  createdAt?: Date;
 
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @ManyToOne(() => Category, (category) => category.exercises, {
     nullable: false,
   })
   
   @JoinColumn({ name: 'category_id' })
-  category: Category;
+  category?: Category;
 
   @OneToMany(
     () => RoutineExercise,
     (routineExercise) => routineExercise.exercise,
   )
-  routineExercises: RoutineExercise[];
+  routineExercises?: RoutineExercise[];
 }

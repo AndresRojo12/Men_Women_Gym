@@ -15,6 +15,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import RNModal from 'react-native-modal';
 
 import CreateCategoryForm from '../../categories/components/CreateCategoryForm';
+import CreateExerciseForm from '../../exercises/components/CreateExerciseForm';
 import ProfileForm from '../../users/components/ProfileForm';
 
 import { CategoryRequest } from '../services/auth.api';
@@ -43,6 +44,8 @@ const AdminDashboard = () => {
   const [file, setFile] = useState<any>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [exercises, setExercises] = useState<any[]>([]);
+  const [selectedExercise, setSelectedExercise] = useState<any>(null);
   const [hoveredCategory, setHoveredCategory] = useState<string | number | null>(null);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<any>(null);
@@ -208,7 +211,7 @@ const AdminDashboard = () => {
             <TouchableOpacity
               style={styles.createGridButton}
               onPress={() => {
-                setSelectedCategory(null);
+                setSelectedExercise(null);
                 setFile(null);
                 setVisible(true);
               }}
@@ -376,6 +379,32 @@ const AdminDashboard = () => {
               onPress={() => {
                 setVisible(false);
                 setSelectedCategory(null);
+                setFile(null);
+              }}
+            >
+              <Text style={styles.closeModalButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={visible} animationType="slide" transparent>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>
+              {selectedExercise ? 'Editar ejercicio' : 'Nuevo ejercicio'}
+            </Text>
+            <CreateExerciseForm
+              pickImage={pickImage}
+              file={file}
+              onSubmit={onSubmit}
+              exercise={selectedExercise}
+            />
+            <TouchableOpacity
+              style={styles.closeModalButton}
+              onPress={() => {
+                setVisible(false);
+                setSelectedExercise(null);
                 setFile(null);
               }}
             >
