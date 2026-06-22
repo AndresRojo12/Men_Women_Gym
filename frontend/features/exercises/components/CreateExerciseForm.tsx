@@ -189,6 +189,7 @@ const styles = StyleSheet.create({
   container: {
     width: 600,
     paddingVertical: 12,
+    alignItems: 'center',
   },
   headerRow: {
     marginBottom: 14,
@@ -239,7 +240,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#374151',
     marginBottom: 12,
-    height: 80,
+    height: 8
   },
   imageButton: {
     backgroundColor: '#2563eb',

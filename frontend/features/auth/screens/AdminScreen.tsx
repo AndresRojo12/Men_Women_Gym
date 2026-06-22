@@ -658,9 +658,9 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.55)',
     padding: 20,
+    alignItems: 'center',
   },
   profileModalWrapper: {
     flex: 1,
@@ -672,7 +672,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#111827',
     borderRadius: 24,
     padding: 24,
-    maxHeight: '95%',
+    height: '100%',
+    width: '30%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalTitle: {
     fontSize: 20,
@@ -683,14 +686,16 @@ const styles = StyleSheet.create({
   },
   closeModalButton: {
     backgroundColor: '#0e2733',
-    marginTop: 20,
-    paddingVertical: 14,
+    marginTop: 5,
     borderRadius: 999,
     alignItems: 'center',
+    width: '70%',
   },
   closeModalButtonText: {
     color: '#fff',
-    fontWeight: '800',
+    marginBottom: 2,
+    padding:10,
+    alignItems: 'center',
   },
   profileModalContent: {
     backgroundColor: '#111827',
