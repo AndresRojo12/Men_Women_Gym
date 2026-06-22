@@ -105,3 +105,86 @@ export const CategoryRequest = async ({
     throw error;
   }
 };
+
+export const ExerciseRequest = async ({
+  action,
+  data,
+  file,
+  token,
+  id,
+}: {
+  action: 'create' | 'update' | 'delete';
+  data?: {
+    name: string;
+    description: string;
+    level: string;
+    categoryId: number;
+  };
+  file?: any;
+  token: string;
+  id?: string;
+}) => {
+  try {
+    // ELIMINAR
+    if (action === 'delete') {
+      const response = await api.delete(`/exercises/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    }
+
+    // CREAR / ACTUALIZAR
+    const formData = new FormData();
+
+    if (data?.name) {
+      formData.append('name', data.name);
+    }
+
+    if (data?.description) {
+      formData.append('description', data.description);
+    }
+
+    if (data?.level) {
+      formData.append('level', data.level);
+    }
+
+    if (data?.categoryId) {
+      formData.append('categoryId', data.categoryId.toString());
+    }
+
+    if (file?.uri) {
+      const imageResponse = await fetch(file.uri);
+
+      const blob = await imageResponse.blob();
+
+      formData.append('file', blob, 'image.jpg');
+    }
+
+    let response;
+
+    // CREAR
+    if (action === 'create') {
+      response = await apiMultipart.post('/exercises', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+
+    // ACTUALIZAR
+    if (action === 'update') {
+      response = await api.put(`/exercises/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+
+    return response?.data;
+  } catch (error: any) {
+    throw error;
+  }
+};

@@ -19,6 +19,7 @@ import CreateExerciseForm from '../../exercises/components/CreateExerciseForm';
 import ProfileForm from '../../users/components/ProfileForm';
 
 import { CategoryRequest } from '../services/auth.api';
+import { ExerciseRequest } from '../services/auth.api';
 
 import { useAuthStore } from '../store/auth.store';
 
@@ -41,12 +42,17 @@ const AdminDashboard = () => {
     email: user?.email || '',
   });
   const [visible, setVisible] = useState(false);
+  const [modalType, setModalType] = useState<'category' | 'exercise' | null>(
+    null,
+  );
   const [file, setFile] = useState<any>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [exercises, setExercises] = useState<any[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<any>(null);
-  const [hoveredCategory, setHoveredCategory] = useState<string | number | null>(null);
+  const [hoveredCategory, setHoveredCategory] = useState<
+    string | number | null
+  >(null);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<any>(null);
 
@@ -163,21 +169,62 @@ const AdminDashboard = () => {
     }
   };
 
+  // Similar functions for exercises can be implemented here (create/update/delete)
+
+  const onSubmitExercise = async (data: any) => {
+    try {
+      await ExerciseRequest({
+        action: selectedExercise ? 'update' : 'create',
+        id: selectedExercise?.id,
+        data: {
+          name: data.name,
+          description: data.description,
+          level: data.level,
+          categoryId: Number(data.categoryId), // Assuming you have a selected category for the exercise
+        },
+        file,
+        token: token ?? '',
+      });
+
+      Toast.show({
+        type: 'success',
+        text1: 'Éxito',
+        text2: selectedExercise
+          ? 'Ejercicio actualizado correctamente'
+          : 'Ejercicio creado correctamente',
+      });
+
+      setVisible(false);
+      setSelectedExercise(null);
+      setFile(null);
+      getCategories(); // Refresh categories to reflect changes in exercises
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: selectedExercise
+          ? 'No se pudo actualizar el ejercicio'
+          : 'No se pudo crear el ejercicio',
+      });
+    }
+  };
+
   return (
-    <LinearGradient
-      colors={['#0b1120', '#101827']}
-      style={styles.container}
-    >
+    <LinearGradient colors={['#0b1120', '#101827']} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.heroCard}>
           <View style={styles.heroHeader}>
             <View>
               <Text style={styles.heroTitle}>Hola, {profilePreview.name}</Text>
               <Text style={styles.heroSubtitle}>
-                Bienvenido al panel de administración. Aquí puedes crear y gestionar categorías con estilo.
+                Bienvenido al panel de administración. Aquí puedes crear y
+                gestionar categorías con estilo.
               </Text>
             </View>
-            <Pressable style={styles.avatarBadge} onPress={() => setProfileVisible(true)}>
+            <Pressable
+              style={styles.avatarBadge}
+              onPress={() => setProfileVisible(true)}
+            >
               <Text style={styles.avatarLetter}>
                 {profilePreview.name.charAt(0).toUpperCase()}
               </Text>
@@ -186,7 +233,9 @@ const AdminDashboard = () => {
 
           <View style={styles.profileChips}>
             <View style={styles.profileChip}>
-              <Text style={styles.profileChipText}>{user?.email || 'admin@tucorreo.com'}</Text>
+              <Text style={styles.profileChipText}>
+                {user?.email || 'admin@tucorreo.com'}
+              </Text>
             </View>
             <View style={styles.profileChip}>
               <Text style={styles.profileChipText}>Administrador</Text>
@@ -197,10 +246,13 @@ const AdminDashboard = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Categorías existentes</Text>
           <View style={styles.gridHeaderRow}>
-            <Text style={styles.gridSectionSubtitle}>Galería de categorías disponibles</Text>
+            <Text style={styles.gridSectionSubtitle}>
+              Galería de categorías disponibles
+            </Text>
             <TouchableOpacity
               style={styles.createGridButton}
               onPress={() => {
+                setModalType('category');
                 setSelectedCategory(null);
                 setFile(null);
                 setVisible(true);
@@ -211,7 +263,8 @@ const AdminDashboard = () => {
             <TouchableOpacity
               style={styles.createGridButton}
               onPress={() => {
-                setSelectedExercise(null);
+                setModalType('exercise');
+                setSelectedCategory(null);
                 setFile(null);
                 setVisible(true);
               }}
@@ -233,13 +286,16 @@ const AdminDashboard = () => {
                     onHoverIn={() => setHoveredCategory(item.id)}
                     onHoverOut={() => setHoveredCategory(null)}
                     onPress={() => {
+                      setModalType('category');
                       setSelectedCategory(item);
                       setVisible(true);
                     }}
                     style={styles.categoryImageWrapper}
                   >
                     <Image
-                      source={{ uri: item.image || 'https://picsum.photos/300' }}
+                      source={{
+                        uri: item.image || 'https://picsum.photos/300',
+                      }}
                       style={[
                         styles.categoryImage,
                         isHovered && styles.categoryImageHover,
@@ -318,42 +374,44 @@ const AdminDashboard = () => {
       >
         <View style={styles.profileModalContent}>
           <Text style={styles.modalTitle}>Perfil</Text>
-            <View style={styles.profileInfoRow}>
-              <View style={styles.profileAvatarLarge}>
-                <Text style={styles.profileAvatarLetter}>
-                  {profilePreview.name.charAt(0).toUpperCase()}
-                </Text>
-              </View>
-              <View style={styles.profileInfoText}>
-                <Text style={styles.profileInfoName}>{profilePreview.name}</Text>
-                <Text style={styles.profileInfoEmail}>{profilePreview.email || 'Sin correo'}</Text>
-              </View>
+          <View style={styles.profileInfoRow}>
+            <View style={styles.profileAvatarLarge}>
+              <Text style={styles.profileAvatarLetter}>
+                {profilePreview.name.charAt(0).toUpperCase()}
+              </Text>
             </View>
-            <TouchableOpacity
-              style={styles.profileActionButton}
-              onPress={() => {
-                setProfileVisible(false);
-                setProfileFormVisible(true);
-              }}
-            >
-              <Text style={styles.profileActionText}>Editar perfil</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.profileActionButton, styles.logoutOutlineButton]}
-              onPress={() => {
-                setProfileVisible(false);
-                setModalVisible(true);
-              }}
-            >
-              <Text style={styles.logoutOutlineText}>Cerrar sesión</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.closeModalButton}
-              onPress={() => setProfileVisible(false)}
-            >
-              <Text style={styles.closeModalButtonText}>Cancelar</Text>
-            </TouchableOpacity>
+            <View style={styles.profileInfoText}>
+              <Text style={styles.profileInfoName}>{profilePreview.name}</Text>
+              <Text style={styles.profileInfoEmail}>
+                {profilePreview.email || 'Sin correo'}
+              </Text>
+            </View>
           </View>
+          <TouchableOpacity
+            style={styles.profileActionButton}
+            onPress={() => {
+              setProfileVisible(false);
+              setProfileFormVisible(true);
+            }}
+          >
+            <Text style={styles.profileActionText}>Editar perfil</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.profileActionButton, styles.logoutOutlineButton]}
+            onPress={() => {
+              setProfileVisible(false);
+              setModalVisible(true);
+            }}
+          >
+            <Text style={styles.logoutOutlineText}>Cerrar sesión</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.closeModalButton}
+            onPress={() => setProfileVisible(false)}
+          >
+            <Text style={styles.closeModalButtonText}>Cancelar</Text>
+          </TouchableOpacity>
+        </View>
       </RNModal>
 
       <ProfileForm
@@ -365,45 +423,43 @@ const AdminDashboard = () => {
       <Modal visible={visible} animationType="slide" transparent>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              {selectedCategory ? 'Editar categoría' : 'Nueva categoría'}
-            </Text>
-            <CreateCategoryForm
-              pickImage={pickImage}
-              file={file}
-              onSubmit={onSubmit}
-              category={selectedCategory}
-            />
-            <TouchableOpacity
-              style={styles.closeModalButton}
-              onPress={() => {
-                setVisible(false);
-                setSelectedCategory(null);
-                setFile(null);
-              }}
-            >
-              <Text style={styles.closeModalButtonText}>Cerrar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+            {modalType === 'category' && (
+              <>
+                <Text style={styles.modalTitle}>
+                  {selectedCategory ? 'Editar categoría' : 'Nueva categoría'}
+                </Text>
 
-      <Modal visible={visible} animationType="slide" transparent>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              {selectedExercise ? 'Editar ejercicio' : 'Nuevo ejercicio'}
-            </Text>
-            <CreateExerciseForm
-              pickImage={pickImage}
-              file={file}
-              onSubmit={onSubmit}
-              exercise={selectedExercise}
-            />
+                <CreateCategoryForm
+                  pickImage={pickImage}
+                  file={file}
+                  onSubmit={onSubmit}
+                  category={selectedCategory}
+                />
+              </>
+            )}
+
+            {modalType === 'exercise' && (
+              <>
+                <Text style={styles.modalTitle}>
+                  {selectedExercise ? 'Editar ejercicio' : 'Nuevo ejercicio'}
+                </Text>
+
+                <CreateExerciseForm
+                  pickImage={pickImage}
+                  file={file}
+                  onSubmit={onSubmitExercise}
+                  exercise={selectedExercise}
+                  categories={categories} // Pass categories to the exercise form for selection
+                />
+              </>
+            )}
+
             <TouchableOpacity
               style={styles.closeModalButton}
               onPress={() => {
                 setVisible(false);
+                setModalType(null);
+                setSelectedCategory(null);
                 setSelectedExercise(null);
                 setFile(null);
               }}
@@ -417,7 +473,9 @@ const AdminDashboard = () => {
       <Modal visible={confirmVisible} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.confirmModal}>
-            <Text style={styles.modalTitle}>¿Seguro que deseas eliminar esta categoría?</Text>
+            <Text style={styles.modalTitle}>
+              ¿Seguro que deseas eliminar esta categoría?
+            </Text>
             <Text style={styles.confirmText}>{categoryToDelete?.name}</Text>
             <View style={styles.confirmActions}>
               <TouchableOpacity
@@ -703,12 +761,11 @@ const styles = StyleSheet.create({
   },
   gridHeaderRow: {
     flexDirection: 'row',
-    justifyContent:'space-between',
-    alignItems:'center',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 18,
     gap: 12,
     maxHeight: '50%',
-
   },
   gridSectionSubtitle: {
     color: '#cbd5e1',
@@ -775,7 +832,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginHorizontal: 4,
   },
-  
+
   categoryButtons: {
     width: '100%',
     gap: 6,

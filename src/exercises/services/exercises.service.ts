@@ -24,7 +24,7 @@ export class ExercisesService {
 
     return exercises.map((exercise) => ({
       ...exercise,
-      image: buildImageUrl('exercises', exercise.image)
+      image: exercise.image ? buildImageUrl('exercises', exercise.image) : undefined,
     }));
   }
 
@@ -62,19 +62,17 @@ export class ExercisesService {
   }
 
   async findOne(id: number) {
-  const exercise = await this.exercisesRepository.findOneBy({ id });
+    const exercise = await this.exercisesRepository.findOneBy({ id });
 
-  if (!exercise) {
-    throw new NotFoundException(`Exercise with id ${id} not found`);
+    if (!exercise) {
+      throw new NotFoundException(`Exercise with id ${id} not found`);
+    }
+
+    return {
+      ...exercise,
+      image: exercise.image ? buildImageUrl('exercises', exercise.image) : null,
+    };
   }
-
-  return {
-    ...exercise,
-    image: exercise.image
-      ? buildImageUrl('exercises', exercise.image)
-      : null,
-  };
-}
 
   async update(id: number, changes: UpdateExerciseDto) {
     const exercise = await this.exercisesRepository.findOneBy({ id });

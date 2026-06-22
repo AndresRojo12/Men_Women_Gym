@@ -8,11 +8,12 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
-
+import { Picker } from '@react-native-picker/picker';
 type FormData = {
   name: string;
   description: string;
   level: string;
+  categoryId: string;
 };
 
 type Exercise = {
@@ -20,6 +21,7 @@ type Exercise = {
   name?: string;
   description?: string;
   level?: string;
+  categoryId?: string;
 };
 
 type Props = {
@@ -28,6 +30,7 @@ type Props = {
   onSubmit: (data: FormData) => void;
   onDelete?: () => void;
   exercise?: Exercise;
+  categories:any[]
 };
 
 export default function CreateExerciseForm({
@@ -36,6 +39,7 @@ export default function CreateExerciseForm({
   onSubmit,
   onDelete,
   exercise,
+  categories
 }: Props) {
   const isEdit = !!exercise?.id;
   const {
@@ -47,6 +51,7 @@ export default function CreateExerciseForm({
       name: exercise?.name || '',
       description: exercise?.description || '',
       level: exercise?.level || '',
+      categoryId: exercise?.categoryId || '',
     },
   });
 
@@ -117,6 +122,35 @@ export default function CreateExerciseForm({
           )}
         />
         {errors.level && <Text style={styles.error}>{errors.level.message}</Text>}
+
+        <Text style={styles.label}>Categoría</Text>
+
+<Controller
+  control={control}
+  name="categoryId"
+  rules={{
+    required: 'La categoría es obligatoria',
+  }}
+  render={({ field: { onChange, value } }) => (
+    <Picker
+      selectedValue={value}
+      onValueChange={onChange}
+    >
+      <Picker.Item
+        label="Seleccione una categoría"
+        value=""
+      />
+
+      {categories.map(category => (
+        <Picker.Item
+          key={category.id}
+          label={category.name}
+          value={category.id}
+        />
+      ))}
+    </Picker>
+  )}
+/>
 
         <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
           <Text style={styles.imageButtonText}>Seleccionar imagen</Text>
