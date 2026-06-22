@@ -285,11 +285,6 @@ const AdminDashboard = () => {
                   <Pressable
                     onHoverIn={() => setHoveredCategory(item.id)}
                     onHoverOut={() => setHoveredCategory(null)}
-                    onPress={() => {
-                      setModalType('category');
-                      setSelectedCategory(item);
-                      setVisible(true);
-                    }}
                     style={styles.categoryImageWrapper}
                   >
                     <Image
@@ -309,6 +304,7 @@ const AdminDashboard = () => {
                     <Pressable
                       style={[styles.iconButton]}
                       onPress={() => {
+                        setModalType('category'); 
                         setSelectedCategory(item);
                         setVisible(true);
                       }}

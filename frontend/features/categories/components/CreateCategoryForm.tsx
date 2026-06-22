@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
   container: {
     width: 600,
     paddingVertical: 12,
+    alignItems: 'center',
   },
   headerRow: {
     marginBottom: 14,
