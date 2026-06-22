@@ -30,7 +30,7 @@ type Props = {
   onSubmit: (data: FormData) => void;
   onDelete?: () => void;
   exercise?: Exercise;
-  categories:any[]
+  categories: any[];
 };
 
 export default function CreateExerciseForm({
@@ -39,7 +39,7 @@ export default function CreateExerciseForm({
   onSubmit,
   onDelete,
   exercise,
-  categories
+  categories,
 }: Props) {
   const isEdit = !!exercise?.id;
   const {
@@ -121,36 +121,32 @@ export default function CreateExerciseForm({
             />
           )}
         />
-        {errors.level && <Text style={styles.error}>{errors.level.message}</Text>}
+        {errors.level && (
+          <Text style={styles.error}>{errors.level.message}</Text>
+        )}
 
         <Text style={styles.label}>Categoría</Text>
 
-<Controller
-  control={control}
-  name="categoryId"
-  rules={{
-    required: 'La categoría es obligatoria',
-  }}
-  render={({ field: { onChange, value } }) => (
-    <Picker
-      selectedValue={value}
-      onValueChange={onChange}
-    >
-      <Picker.Item
-        label="Seleccione una categoría"
-        value=""
-      />
+        <Controller
+          control={control}
+          name="categoryId"
+          rules={{
+            required: 'La categoría es obligatoria',
+          }}
+          render={({ field: { onChange, value } }) => (
+            <Picker style={styles.pickerItem} selectedValue={value} onValueChange={onChange}>
+              <Picker.Item  label="Seleccione una categoría" value="" />
 
-      {categories.map(category => (
-        <Picker.Item
-          key={category.id}
-          label={category.name}
-          value={category.id}
+              {categories.map((category) => (
+                <Picker.Item
+                  key={category.id}
+                  label={category.name}
+                  value={category.id}
+                />
+              ))}
+            </Picker>
+          )}
         />
-      ))}
-    </Picker>
-  )}
-/>
 
         <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
           <Text style={styles.imageButtonText}>Seleccionar imagen</Text>
@@ -170,7 +166,10 @@ export default function CreateExerciseForm({
         )}
 
         <View style={styles.actionsRow}>
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit(onSubmit)}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={handleSubmit(onSubmit)}
+          >
             <Text style={styles.submitText}>
               {isEdit ? 'Actualizar' : 'Guardar'}
             </Text>
@@ -214,20 +213,33 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   label: {
-    color: '#e5e7eb',
+    color: '#3b4250',
     fontSize: 14,
     marginBottom: 8,
+    marginTop: 12,
+    
+  },
+
+  pickerItem: {
+    color: '#1f2937',
+    fontSize: 15,
+    backgroundColor: '#a6acbe',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    marginBottom: 12,
   },
   input: {
     backgroundColor: '#1f2937',
     borderRadius: 16,
     paddingHorizontal: 16,
     paddingVertical: 14,
-    color: '#f9fafb',
+    color: '#ebedf0',
     fontSize: 15,
     borderWidth: 1,
     borderColor: '#374151',
     marginBottom: 12,
+    height: 80,
   },
   imageButton: {
     backgroundColor: '#2563eb',
@@ -235,6 +247,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: 'center',
     marginBottom: 16,
+    marginTop: 12,
   },
   imageButtonText: {
     color: '#ffffff',
