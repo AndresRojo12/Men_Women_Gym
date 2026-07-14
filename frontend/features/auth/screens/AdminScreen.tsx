@@ -12,6 +12,9 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '../types/types';
 import RNModal from 'react-native-modal';
 
 import CreateCategoryForm from '../../categories/components/CreateCategoryForm';
@@ -31,7 +34,13 @@ import { api } from '../services/api';
 
 import GlobalModal from '../global/components/GlobalModal';
 
+type AdminNavProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'AdminDashboard'
+>;
+
 const AdminDashboard = () => {
+  const navigation = useNavigation<AdminNavProp>();
   const { logout, token, user } = useAuthStore();
 
   const [isModalVisible, setModalVisible] = useState(false);
@@ -41,6 +50,10 @@ const AdminDashboard = () => {
     name: 'Admin',
     email: user?.email || '',
   });
+
+  const openNutritionGoals = () => {
+    navigation.navigate('NutritionGoals');
+  };
   const [visible, setVisible] = useState(false);
   const [modalType, setModalType] = useState<'category' | 'exercise' | null>(
     null,
@@ -241,6 +254,13 @@ const AdminDashboard = () => {
               <Text style={styles.profileChipText}>Administrador</Text>
             </View>
           </View>
+
+          <TouchableOpacity
+            style={styles.nutritionButton}
+            onPress={openNutritionGoals}
+          >
+            <Text style={styles.nutritionButtonText}>Nutrición</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.section}>
@@ -538,6 +558,25 @@ const styles = StyleSheet.create({
     color: '#cbd5e1',
     lineHeight: 22,
     width: '85%',
+  },
+  nutritionButton: {
+    marginTop: 18,
+    backgroundColor: '#10b981',
+    paddingVertical: 14,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#0f766e',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.28,
+    shadowRadius: 16,
+    elevation: 7,
+  },
+  nutritionButtonText: {
+    color: '#f8fafc',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 0.4,
   },
   avatarBadge: {
     width: 56,

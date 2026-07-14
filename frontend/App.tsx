@@ -1,6 +1,5 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -11,6 +10,7 @@ import LoginScreen from './features/auth/screens/LoginScreen';
 import { RegisterScreen } from './features/auth/screens/RegisterScreen';
 import HomeScreen from './features/home/screens/HomeScreen';
 import AdminDashboard from './features/auth/screens/AdminScreen';
+import NutritionGoalsScreen from './features/nutritions/nutritions_goals/NutritionGoalsScreen';
 
 // screen categories
 import CategoriesScreen from './features/categories/screens/GetCategories';
@@ -21,29 +21,6 @@ import CreateRoutineScreen from './features/routines/screens/CreateRoutineScreen
 import RoutineDetailScreen from './features/routines/screens/RoutineDetailScreen';
 
 import '@/global.css';
-
-const prefixes = typeof window !== 'undefined' && window.location?.origin ? [window.location.origin] : [];
-
-const linking = {
-  prefixes,
-  config: {
-    screens: {
-      Login: 'login',
-      Register: 'register',
-      Home: '',
-      Categories: 'categories',
-      Exercises: 'exercises',
-      Routines: 'routines',
-      CreateRoutine: 'routines/create',
-      RoutineDetail: 'routines/:routineId',
-      AdminDashboard: 'admin',
-    },
-  },
-};
-
-const setting = {
-  icon: (props: any) => <MaterialCommunityIcons {...props} />,
-};
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
@@ -72,19 +49,22 @@ export default function App() {
   }
 
   return (
-    <PaperProvider settings={setting}>
-      <NavigationContainer linking={linking}>
+    <PaperProvider>
+      <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {isAuthenticated ? (
             user?.role === 'admin' ? (
-              <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
+              <>
+                <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
+                <Stack.Screen name="NutritionGoals" component={NutritionGoalsScreen} />
+              </>
             ) : (
               <>
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Exercises" component={ExercisesScreen} />
-              <Stack.Screen name="Routines" component={RoutinesScreen} />
-              <Stack.Screen name="CreateRoutine" component={CreateRoutineScreen} />
-              <Stack.Screen name="RoutineDetail" component={RoutineDetailScreen} />
+                <Stack.Screen name="Home" component={HomeScreen} />
+                <Stack.Screen name="Exercises" component={ExercisesScreen} />
+                <Stack.Screen name="Routines" component={RoutinesScreen} />
+                <Stack.Screen name="CreateRoutine" component={CreateRoutineScreen} />
+                <Stack.Screen name="RoutineDetail" component={RoutineDetailScreen} />
               </>
             )
           ) : (

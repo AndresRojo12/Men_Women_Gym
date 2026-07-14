@@ -48,4 +48,5 @@ export type AuthStackParamList = {
   CreateRoutine: undefined;
   RoutineDetail: { routineId: number };
   AdminDashboard: undefined;
+  NutritionGoals: undefined;
 };

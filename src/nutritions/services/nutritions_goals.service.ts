@@ -23,16 +23,16 @@ export class NutritionsGoalsService {
     return nutritionGoals;
   }
 
-    async create(data: CreateNutritionGoalDto) {
-        const existingNutritionGoal = await this.nutritionGoalsRepository.findOne({
-            where: { name: data.name },
-        });
-        if (existingNutritionGoal) {
-            throw new ConflictException(
-                `Nutrition Goal with name ${data.name} already exists`,
-            );
-        }
-        const newNutritionGoal = this.nutritionGoalsRepository.create(data);
-        return this.nutritionGoalsRepository.save(newNutritionGoal);
+  async create(data: CreateNutritionGoalDto) {
+    const existingNutritionGoal = await this.nutritionGoalsRepository.findOne({
+      where: { name: data.name },
+    });
+    if (existingNutritionGoal) {
+      throw new ConflictException(
+        `Nutrition Goal with name ${data.name} already exists`,
+      );
     }
+    const newNutritionGoal = this.nutritionGoalsRepository.create(data);
+    return this.nutritionGoalsRepository.save(newNutritionGoal);
+  }
 }
