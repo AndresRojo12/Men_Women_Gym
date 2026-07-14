@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
-import { NutritionsService } from './services/nutritions.service';
-import { NutritionsController } from './controllers/nutritions.controller';
+import { NutritionsGoalsService } from './services/nutritions_goals.service';
+import { NutritionsController } from './controllers/nutritions_goals.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Nutrition_Goals } from './entities/Nutrition_Goals.entity';
 
 @Module({
-  providers: [NutritionsService],
+  imports: [TypeOrmModule.forFeature([Nutrition_Goals])],
+  providers: [NutritionsGoalsService],
   controllers: [NutritionsController]
 })
 export class NutritionsModule {}

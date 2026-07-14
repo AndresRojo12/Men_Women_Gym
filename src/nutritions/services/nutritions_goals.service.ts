@@ -13,7 +13,7 @@ import {
 } from '../dtos/Nutrition_Goals.dto';
 
 @Injectable()
-export class NutritionsService {
+export class NutritionsGoalsService {
   constructor(
     @InjectRepository(Nutrition_Goals)
     private readonly nutritionGoalsRepository: Repository<Nutrition_Goals>,
