@@ -13,6 +13,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { RoutineExercisesModule } from './routine_exercises/routine_exercises.module';
 import { NutritionsModule } from './nutritions/nutritions.module';
+import { NutritionPlanModule } from './nutrition_plan/nutrition_plan.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { NutritionsModule } from './nutritions/nutritions.module';
     AuthModule,
     RoutineExercisesModule,
     NutritionsModule,
+    NutritionPlanModule,
   ],
   controllers: [AppController],
   providers: [
