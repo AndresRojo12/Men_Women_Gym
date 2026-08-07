@@ -14,6 +14,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { RoutineExercisesModule } from './routine_exercises/routine_exercises.module';
 import { NutritionsModule } from './nutritions/nutritions.module';
 import { NutritionPlanModule } from './nutrition_plan/nutrition_plan.module';
+import { FoodsModule } from './foods/foods.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { NutritionPlanModule } from './nutrition_plan/nutrition_plan.module';
     RoutineExercisesModule,
     NutritionsModule,
     NutritionPlanModule,
+    FoodsModule,
   ],
   controllers: [AppController],
   providers: [
