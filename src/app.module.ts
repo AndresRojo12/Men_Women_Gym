@@ -15,6 +15,7 @@ import { RoutineExercisesModule } from './routine_exercises/routine_exercises.mo
 import { NutritionsModule } from './nutritions/nutritions.module';
 import { NutritionPlanModule } from './nutrition_plan/nutrition_plan.module';
 import { FoodsModule } from './foods/foods.module';
+import { NutritionPlanItemsModule } from './nutrition_plan_items/nutrition_plan_items.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { FoodsModule } from './foods/foods.module';
     NutritionsModule,
     NutritionPlanModule,
     FoodsModule,
+    NutritionPlanItemsModule,
   ],
   controllers: [AppController],
   providers: [
