@@ -1,38 +1,46 @@
 import {
-    Entity,
-    Column,
-    CreateDateColumn,
-    UpdateDateColumn,
-    JoinColumn,
-    PrimaryGeneratedColumn,
+  Entity,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+import { NutritionPlanItem } from '../../nutrition_plan_items/entities/Nutrition_Plan_Items.entity';
+
+@Entity('foods')
 export class Foods {
-    @PrimaryGeneratedColumn()
-    id!: string;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Column()
-    name!: string;
+  @Column()
+  name!: string;
 
-    @Column()
-    description!: string;
+  @Column()
+  description!: string;
 
-    @Column()
-    calories!: number;
+  @Column({ type: 'decimal' })
+  calories!: number;
 
-    @Column()
-    protein!: number;
+  @Column({ type: 'decimal' })
+  protein!: number;
 
-    @Column()
-    carbohydrates!: number;
+  @Column({ type: 'decimal' })
+  carbohydrates!: number;
 
-    @Column()
-    fats!: number;
+  @Column({ type: 'decimal' })
+  fats!: number;
 
-    @CreateDateColumn()
-    createdAt!: Date;
+  @OneToMany(
+    () => NutritionPlanItem,
+    (item) => item.food,
+  )
+  planItems!: NutritionPlanItem[];
 
-    @UpdateDateColumn()
-    updatedAt!: Date;
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
 }
